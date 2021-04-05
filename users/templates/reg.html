@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Регистрация {% endblock %}
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'pages/form.css' %}">
+{% endblock %}
+{% block main_header_title %} Регистрация {% endblock %}
+{% block main_header_content %}{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        {% for error in form.errors %}
+        <div class="alert alert-danger" role="alert">
+            <span class="form__error">
+                {{ error|escape }}
+                </span>
+        </div>
+        {% endfor %}
+        <form class="form" method="post" action="{% url 'signup' %}">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form__group" aria-required="{% if field.field.required %}'true'{% else %}'false'{% endif %}">
+            <label for='{{ field.id_for_label }}' class="form__label">{{ field.label }}</label>
+            <div class="form__field-group">
+                <input type="{{ field.widget_type }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form__input" >
+                <span class="form__error"></span>
+            </div>
+
+            {% if field.help_text %}
+            <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div class="form__footer">
+            <button class="button button_style_blue">Создать аккаунт</button>
+        </div>
+        </form>
+    </div>
+{% endblock %}

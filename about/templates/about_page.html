@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ about_title }}{% endblock %}
+{% block css_block %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock %}
+{% block main_header_title %}{% endblock %}
+{% block main_header_content %}{% endblock %}
+
+{% block content %}
+<main class="main container">
+    <div class="custom-center-block">
+            <p class="custom-text-block">{{ about_text }}</p>
+        <div class="custom-button-block">
+            <button class="button button_style_blue">Перейти на главную</button>
+        </div>
+    </div>
+</main>
+{% endblock %}
