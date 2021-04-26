@@ -1,4 +1,3 @@
-
 class Api {
     constructor(apiUrl) {
         this.apiUrl =  apiUrl;
@@ -110,13 +109,14 @@ class Api {
       })
   }
   getIngredients  (text)  {
-    return fetch(`/ingredients?query=${text}`, {
+    return fetch(`${this.apiUrl}/ingredients?search=${text}&limit=6`, {
         headers: {
             'Content-Type': 'application/json'
         }
     })
       .then( e => {
           if(e.ok) {
+              // console.log('успешный ответ сервера', e)
               return e.json()
           }
           return Promise.reject(e.statusText)

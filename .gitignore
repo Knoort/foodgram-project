@@ -129,5 +129,7 @@ dmypy.json
 .pyre/
 
 static/admin
+media/
+migrations/
 
 -*

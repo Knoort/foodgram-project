@@ -15,15 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     #  регистрация и авторизация
-    path("auth/", include("users.urls"), name="auth"),
-
-    #  если нужного шаблона для /auth не нашлось в файле users.urls — 
-    #  ищем совпадения в файле django.contrib.auth.urls
-    path("auth/", include("django.contrib.auth.urls")),
+    path("auth/", include("users.urls")),
     path('about/', include('about.urls', namespace='about')),
-    path('admin/', admin.site.urls, name='admin'),
-    path('recipe/', include('recipes.urls'), name='recipe'),
+    path('admin/', admin.site.urls),
+    path('recipes/', include('recipes.urls'), name='recipes'),
+
+    path('api/', include('api.urls'), name='api'),
+    # path('users/', include('users.urls'), name='users'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

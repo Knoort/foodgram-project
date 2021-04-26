@@ -1,5 +1,7 @@
-const counterId = document.querySelector('#counter');
+// import { apiUrl } from '../js/config/config.js';
+// const apiUrl = '/api/v1';
 
+const counterId = document.querySelector('#counter');
 const ingredientsContainer = document.querySelector('.form__field-group-ingredientes-container');
 const nameIngredient = document.querySelector('#nameIngredient');
 const formDropdownItems = document.querySelector('.form__dropdown-items');
@@ -83,9 +85,12 @@ function Ingredients() {
 
 const cbEventInput = (elem) => {
     return api.getIngredients(elem.target.value).then( e => {
+        console.log('ответ сервера', e);
         if(e.length !== 0 ) {
-            const items = e.map( elem => {
-                return `<a class="form__item-list" data-val="${elem.dimension}"">${elem.title}</a>`
+            // e.results.map(elem => {console.log(elem)})
+            const items = e.results.map( elem => {
+                console.log(elem)
+                return `<a class="form__item-list" data-val="${elem.units}"">${elem.name}</a>`
             }).join(' ')
             formDropdownItems.style.display = 'flex';
             formDropdownItems.innerHTML = items;
@@ -96,7 +101,7 @@ const cbEventInput = (elem) => {
     })
 };
 
-const eventInput = debouncing(cbEventInput, 1000);
+const eventInput = debouncing(cbEventInput, 500);
 
 // вешаем апи
 nameIngredient.addEventListener('input', eventInput);

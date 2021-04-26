@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Выход {% endblock %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock %}
+
+{% block main_header_title %} Выход из системы {% endblock %}
+{% block main_header_content %}{% endblock %}
+{% block content %}
+    <div class="custom-center-block">
+            <p class="custom-text-block">Вы вышли из помощника, ждем вас снова!</p>
+        <div class="custom-button-block">
+            <button class="button button_style_blue">Перейти на главную</button>
+        </div>
+    </div>
+{% endblock %}

@@ -1,32 +1,32 @@
 <!doctype html>
+
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport"
-              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{% block title %} Заголовок {% endblock %}</title>
-        {% block css_block %}{% load static %}{% endblock %}
-    </head>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Заголовок{% endblock %}</title>
+    {% block css_block %}{% endblock %}
+</head>
 
 <body class="body">
-    <header class="header">
-        {% if user.is_authenticated %}
-            {% include 'includes/nav.html' %}
-        {% else %}
-            {% include 'includes/navNotAuth.html' %}
-        {% endif %}
-    </header>
-    <main class="main container">
-        <div class="main__header">
-            <h1 class="main__title">{% block main_header_title %}{% endblock %}</h1>
-            {% block main_header_content %}{% endblock %}\
-        </div>
-        {% block content %}{% load static %}{% endblock %}
-    </main>
-
-    {% include 'includes/footer.html' %}
-
-    {% block js_block %}{% endblock %}
+<header class="header">
+    {% if user.is_authenticated %}
+        {% include 'includes/nav.html' %}
+    {% else %}
+        {% include 'includes/navNotAuth.html' %}
+    {% endif %}
+</header>
+<main class="main container">
+    <div class="main__header">
+        <h1 class="main__title">{% block main_header_title %}{% endblock %}</h1>
+        {% block main_header_content %}{% endblock %}
+    </div>
+    {% block content %}{% endblock %}
+</main>
+{% include 'includes/footer.html' %}
+{% block js_block %}{% endblock %}
 </body>
 </html>

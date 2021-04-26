@@ -33,12 +33,15 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'django_filters',
     'users',
     'about',
     'recipes',
@@ -111,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -127,17 +130,27 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 _STATIC_ROOT = Path(BASE_DIR, 'static')
-if DEBUG:
-    STATICFILES_DIRS = (_STATIC_ROOT, )
-else:
-    STATIC_ROOT = _STATIC_ROOT
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
-# ]
+# if DEBUG:
+#     STATICFILES_DIRS = (_STATIC_ROOT, )
+# else:
+#     STATIC_ROOT = _STATIC_ROOT
 
-MEDIA_ROOT = Path(BASE_DIR, 'media/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'assets'),
+]
+
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #Path(BASE_DIR, 'media')
 
-LOGIN_URL = 'auth/login/'
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = "new_recipe"
+
+REST_FRAMEWORK = {        
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5,
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+    # 'SEARCH_PARAM': 'query'
+}
