@@ -1,0 +1,27 @@
+{% load recipe_filters %}
+<div class="card" data-id="{{recipe.id}}">
+    {{recipe.id}}
+    <a href="{% url 'recipe_view_redirect' recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe|field_verbose_name:"image" }}" class="card__image"></a>
+    <div class="card__body">
+        <a class="card__title link" href="{% url 'recipe_view_redirect' recipe.id %}" target="_blank">{{ recipe.name }}</a>
+        <ul class="card__items">
+            {% for tag in recipe.tags.values %}
+                <li class="card__item"><span class="badge badge_style_{{tag.color}}">{{tag.display_name}}</span></li>
+            {% endfor %}
+        </ul>
+        <div class="card__items card__items_column">
+            <p class="card__text"><span class="icon-time"></span> {{recipe.cooking_time}} мин.</p>
+            <p class="card__text"><span class="icon-user"></span>
+                <a href="{% url 'author_profile' recipe.author.username %}" style="color: black">
+                    {% include 'includes/author.html' with author=recipe.author %}
+                </a>
+            </p>
+        </div>
+    </div>
+    <div class="card__footer">
+        <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+        {% if user.is_authenticated %}
+            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+        {% endif %}
+    </div>
+</div>  

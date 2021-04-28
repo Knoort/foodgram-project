@@ -29,11 +29,14 @@ ALLOWED_HOSTS = [
     "testserver",    
 ]
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+] 
 
 # Application definition
 
 INSTALLED_APPS = [
-
+    'users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,10 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
-    'users',
+
     'about',
     'recipes',
     'api',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
@@ -144,7 +149,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #Path(BASE_DIR, 'media')
 
 LOGIN_URL = '/auth/login/'
-LOGIN_REDIRECT_URL = "new_recipe"
+LOGIN_REDIRECT_URL = "index"
 
 REST_FRAMEWORK = {        
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
@@ -154,3 +159,4 @@ REST_FRAMEWORK = {
     ],
     # 'SEARCH_PARAM': 'query'
 }
+PAGINATION_PAGE_SIZE = 3

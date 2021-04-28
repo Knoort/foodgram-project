@@ -1,0 +1,5 @@
+    {% if author.first_name or author.last_name %}
+        {{ author.first_name }} {{ author.last_name }}
+    {% else %}
+        {{ author.username }}
+    {% endif %}

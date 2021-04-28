@@ -85,7 +85,7 @@ class Recipe(models.Model):
         auto_created=True,
         allow_unicode=True
     )
-    tags = models.ManyToManyField('RecipeTag', blank=True, related_name='recipes')
+    tags = models.ManyToManyField('RecipeTag', blank=False, related_name='recipes')
     pub_date = models.DateTimeField(
         'Дата публикации',
         null=True,

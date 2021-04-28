@@ -1,0 +1,10 @@
+    {% load recipe_filters %}
+    <li class="tags__item">
+        <a
+            id="{{ tag.name }}"
+            class="tags__checkbox tags__checkbox_style_{{ tag.color }}
+            tags__checkbox{% if tag.name in tags_checked %}_active{% endif %}"
+            href="?{{ tags_checked|change_tag:tag.name }}"
+        ></a>
+        <span class="tags__label">{{ tag.display_name }}</span>
+    </li>

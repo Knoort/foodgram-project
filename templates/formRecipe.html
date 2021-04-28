@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load recipe_filters %}
 {% block title %} Создание рецепта {% endblock %}
 
 {% block css_block %}
@@ -46,14 +46,15 @@
                                 name="tags"
                                 id="id_{{ tag.name }}"
                                 class="tags__checkbox tags__checkbox_style_{{ tag.color }}"
-                                value='{{ tag.pk }}'
-                                {% if tag.pk|stringformat:"s" in form.tags.value %}checked{% endif %}
+                                value="{{ tag.pk }}"
+                                {% if tag.id in form.tags.value|int_format %}checked{% endif %}
                             >
                             <label for="id_{{ tag.name }}" class="tags__label">{{ tag.display_name }}</label>
                         </div>
                         {% endfor %}
                     </div>
                     <span class="form__error">{{ form.tags.errors }}</span>
+                    {{form.tags.value }}<br>
                 </div>
             </div>
 
@@ -119,7 +120,7 @@
 
             <div class="form__group">
                 <label for="{{ form.image.id_for_label }}" class="form__label">{{ form.image.label }}</label>
-                <span class="form__label">{{ form.image.label }}</span>
+                {% comment %} <span class="form__label">{{ form.image.label }}</span> {% endcomment %}
                 <div class="form__field-group">
                     <input
                         type="file"

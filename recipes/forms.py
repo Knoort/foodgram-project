@@ -17,6 +17,12 @@ class RecipeForm(forms.ModelForm):
         if Recipe.objects.filter(name=name).exists():
             raise forms.ValidationError('Такое название уже существует!')
         return name
+    
+    def clean_tags(self):
+        tags = self.cleaned_data['tags']
+        if not tags:
+            raise forms.ValidationError('Укажите теги!')
+        return tags
 
     def clean(self):
         ingredients = get_ingredients(self.data)
