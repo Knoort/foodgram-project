@@ -1,16 +1,35 @@
 <nav class="nav">
     <div class="nav__container container">
+        {% with curr_url=request.resolver_match.url_name namespace=request.resolver_match.namespace %}
         <ul class="nav__items list">
-            <li class="nav__item"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
-            <li class="nav__item"><a href="#" class="nav__link link">Мои подписки</a></li>
-            <li class="nav__item"><a href="{% url 'new_recipe' %}" class="nav__link link">Создать рецепт</a></li>
-            <li class="nav__item nav__item_active"><a href="#" class="nav__link link">Избранное</a></li>
-            <li class="nav__item"><a href="#" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
+            <li class="nav__item{% if curr_url == 'index' %} nav__item_active{% endif %}">
+                <a href="{% url 'recipes:index' %}" class="nav__link link">Рецепты</a>
+            </li>
+            <li class="nav__item{% if curr_url == 'subscriptions' %} nav__item_active{% endif %}">
+                <a href="{% url 'recipes:subscriptions' %}" class="nav__link link">Мои подписки</a>
+            </li>
+            <li class="nav__item{% if curr_url == 'new_recipe' %} nav__item_active{% endif %}">
+                <a href="{% url 'recipes:new_recipe' %}" class="nav__link link">Создать рецепт</a>
+            </li>
+            <li class="nav__item{% if curr_url == 'favorites' %} nav__item_active{% endif %}">
+                <a href="{% url 'recipes:favorites' %}" class="nav__link link">Избранное</a>
+            </li>
+            <li class="nav__item">
+                <a href="#" class="nav__link link">Список покупок</a>
+                <span class="badge badge_style_blue nav__badge" id="counter">4</span>
+            </li>
         </ul>
         <ul class="nav__items list">
-            <li class="nav__item"><a class="nav__link link" href="{% url 'author_profile' user.username %}">{{ user.username }} </a></li>
-            <li class="nav__item"><a href="{% url 'password_change' %}" class="nav__link link">Изменить пароль</a></li>
-            <li class="nav__item"><a href="{% url 'logout' %}" class="nav__link link">Выход</a></li>
+            <li class="nav__item {% if curr_url == 'author_profile' and page_data.author.username == user.username %} nav__item_active{% endif %}">
+                <a class="nav__link link" href="{% url 'recipes:author_profile' user.username %}">{{ user.username }} </a>
+            </li>
+            <li class="nav__item">
+                <a href="{% url 'password_change' %}" class="nav__link link">Изменить пароль</a>
+            </li>
+            <li class="nav__item">
+                <a href="{% url 'logout' %}" class="nav__link link">Выход</a>
+            </li>
         </ul>
+        {% endwith %}
     </div>
 </nav>

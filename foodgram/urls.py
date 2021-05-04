@@ -23,9 +23,10 @@ urlpatterns = [
     path("auth/", include("users.urls")),
     path('about/', include('about.urls', namespace='about')),
     path('admin/', admin.site.urls),
-    path('recipes/', include('recipes.urls'), name='recipes'),
-
     path('api/', include('api.urls'), name='api'),
+    path('recipes/', include('recipes.urls', namespace='recipes')),
+
+
     # path('users/', include('users.urls'), name='users'),
 ]
 if settings.DEBUG:

@@ -1,0 +1,5 @@
+    {% if page_data.name == 'author_profile' %}
+        {{page_data.author.get_full_name|default:page_data.author.username }}
+    {% else %}
+        {{ page_data.title }}
+    {% endif %}

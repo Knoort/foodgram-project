@@ -1,0 +1,3 @@
+<button class="button button_style_{% if following %}light-{% endif %}blue button_size_subscribe" name="subscribe"{% if not following %} data-out{% endif %}>
+    {% if not following %}Подписаться на автора{% else %}Отписаться от автора{% endif %}
+</button>

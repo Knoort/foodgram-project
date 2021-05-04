@@ -29,9 +29,15 @@ class Ingredient(models.Model):
 
 
 class TagChoices(models.TextChoices):
-    BREAKFAST = 'breakfast', 'morning meal'
-    LUNCH = 'lunch', 'noon meal'
-    DINNER = 'dinner', 'evening meal'
+    BREAKFAST = 'breakfast', 'завтрак'
+    LUNCH = 'lunch', 'обед'
+    DINNER = 'dinner', 'ужин'
+
+
+class ColorChoices(models.TextChoices):
+    GREEN = 'green', 'зеленый'
+    ORANGE = 'orange', 'оранжевый'
+    PURPLE = 'purple', 'пурпурный'
 
 
 class RecipeTag(models.Model):
@@ -51,6 +57,7 @@ class RecipeTag(models.Model):
         'Цвет тега',
         max_length=20,
         blank=False,
+        choices=ColorChoices.choices,
 #        verbose_name='Цвет тега'
     )
 
@@ -63,7 +70,6 @@ class Recipe(models.Model):
     name = models.CharField(
         max_length=100,
         blank=False,
-        unique=True,
         verbose_name='Название рецепта'
         )
     image = models.ImageField('Изображение', upload_to='recipes/')
@@ -121,3 +127,43 @@ class RecipeIngredients(models.Model):
 
     class Meta:
         unique_together = 'recipe', 'ingredient'
+
+
+class Favorites(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        verbose_name='Избиратель'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='admirers',
+        verbose_name='Избранный рецепт'
+    )
+    
+    class Meta:
+        unique_together = 'user', 'recipe'
+        verbose_name = 'Избранный рецепт',
+        verbose_name_plural = 'Избранные'
+
+
+class Subscriptions(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following',
+        verbose_name='Подписчик'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follower',
+        verbose_name='Автор'
+    )
+    
+    class Meta:
+        unique_together = 'user', 'author'
+        verbose_name = 'Подписка',
+        verbose_name_plural = 'Подписки'

@@ -22,6 +22,7 @@ class Favorites {
             .then( e => {
                 target.innerHTML = this.config.default.text;
                 target.setAttribute(this.config.attr, true);
+    
                 callBack&&callBack()
             })
             .finally(e => {

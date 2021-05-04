@@ -5,6 +5,13 @@ from recipes.models import RecipeTag, TagChoices
 
 register = template.Library()
 
+def to_int_format(item):
+    if type(item) == int:
+        return item
+    if type(item) == str and item.isdigit():
+        return int(item)
+    return item
+
 
 @register.filter
 def field_verbose_name(obj, field):
@@ -27,27 +34,18 @@ def obj_verbose_name_plural(obj):
 
 @register.filter
 def int_format(obj):
-
-    def digit_int_format(item):
-        if type(item) == int:
-            return item
-        if type(item) == str:
-            if not item.isdigit():
-                return item
-            return int(item)
-        return item
-
+    """
+    Приводит текстовые цифры и списки цифр к числам.
+    """
     if type(obj) in (str, int):
-        return digit_int_format(obj)
+        return to_int_format(obj)
 
     if type(obj) == list:
         cp_obj = []
         for item in obj:
-            print('obj', obj, 'add item', item)
             if type(item) not in (str, int):
                 return obj
-            print('added!')
-            cp_obj.append(digit_int_format(item))
+            cp_obj.append(to_int_format(item))
         return cp_obj
 
     return obj
@@ -57,22 +55,41 @@ def int_format(obj):
 def change_tag(obj, tag):
     all_tag_names = [name[0] for name in TagChoices.choices]
 
-    print('tag: ', tag)
     curr_tags = obj.copy()
-    # curr_tags = []
-    # copy_tags = obj.copy()
-    # for t in copy_tags:
-    #     if t in all_tag_names:
-    #         curr_tags.append(t)
+
     if tag in curr_tags:
         curr_tags.remove(tag)
     elif tag in all_tag_names:
         curr_tags.append(tag)
     params = urlencode({'tags': curr_tags}, doseq=True)
-    print(params)
+
     # reply=''
     # for tag in curr_tags:
     #     reply += f'tags={tag}&'
     # reply = reply[:-1]
     # print(reply)
     return params
+
+
+@register.filter
+def top_slice(obj):
+    return f':{obj}'
+
+
+@register.filter
+def sub(obj, arg):
+    return to_int_format(obj) - to_int_format(arg)
+
+
+@register.filter
+def cyr_pluralize(obj, num):
+    obj = to_int_format(obj)
+    num = to_int_format(num)
+    if type(num) != int or type(obj) != int:
+        return 'ов'
+    dig = str(obj - num)
+    if dig[-1] == '1':
+        return ''
+    if dig[-1] in ['2', '3', '4']:
+        return 'а'
+    return 'ов'

@@ -43,20 +43,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'django_filters',
-
+    'debug_toolbar',
+    'api',
     'about',
     'recipes',
-    'api',
-    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -149,7 +151,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #Path(BASE_DIR, 'media')
 
 LOGIN_URL = '/auth/login/'
-LOGIN_REDIRECT_URL = "index"
+LOGIN_REDIRECT_URL = "recipes:index"
 
 REST_FRAMEWORK = {        
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
@@ -159,4 +161,5 @@ REST_FRAMEWORK = {
     ],
     # 'SEARCH_PARAM': 'query'
 }
-PAGINATION_PAGE_SIZE = 3
+PAGINATION_PAGE_SIZE = 6
+PREVIEWS_COUNT = 3

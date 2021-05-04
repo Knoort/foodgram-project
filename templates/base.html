@@ -14,7 +14,7 @@
 <body class="body">
 <header class="header">
     {% if user.is_authenticated %}
-        {% include 'includes/nav.html' %}
+        {% include 'includes/nav.html' with page_data=page_data %}
     {% else %}
         {% include 'includes/navNotAuth.html' %}
     {% endif %}

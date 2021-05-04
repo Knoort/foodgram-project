@@ -1,0 +1,35 @@
+{% load recipe_filters %}
+<div class="card-user" data-author="{{ author.id }}">
+
+    <div class="card-user__header">
+        <h2 class="card-user__title">{{ author.get_full_name|default:author.username }}</h2>
+    </div>
+
+    <div class="card-user__body">
+        <ul class="card-user__items">
+
+            {% with cnt|top_slice as slice %}
+                {% for recipe in author.recipes.all|slice:slice %}
+                    {% include 'includes/recipeCardPreview.html' with recipe=recipe %}
+                {% endfor %}            
+            {% endwith %}
+
+            {% if author.recipes.count > cnt %}
+                <li class="card-user__item">
+                    <a
+                        href="{% url 'recipes:author_profile' author.username %}"
+                        class="card-user__link link"
+                    >
+                        Еще {{ author.recipes.count|sub:cnt}} рецепт{{author.recipes.count|cyr_pluralize:cnt}}...
+                    </a>
+                </li>
+            {% endif %}
+
+        </ul>
+    </div>
+
+    <div class="card-user__footer">
+        <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
+    </div>
+
+</div>

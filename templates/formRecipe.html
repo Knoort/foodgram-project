@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{% static 'pages/form.css' %}">
 {% endblock %}
 
-{% block main_header_title %} Создание рецепта {% endblock %}
+{% block main_header_title %}{% if recipe %}Редактирование рецепта{% else %}Создание рецепта{% endif %}{% endblock %}
 {% block main_header_content %}{% endblock %}
 {% block content %}
     <div class="form-container">
@@ -117,23 +117,35 @@
                     <span class="form__error">{{ form.description.errors }}</span>
                 </div>
             </div>
-
+            {% comment %} {{form.image}} {% endcomment %}
             <div class="form__group">
                 <label for="{{ form.image.id_for_label }}" class="form__label">{{ form.image.label }}</label>
                 {% comment %} <span class="form__label">{{ form.image.label }}</span> {% endcomment %}
                 <div class="form__field-group">
-                    <input
-                        type="file"
-                        name="{{ form.image.html_name }}"
-                        id="{{ form.image.id_for_label }}"
-                        value="{{ form.image.value }}"
-                    >
+                    {% if recipe %}
+                        {{form.image}}
+                    {% else %}
+                        {{form.image.name}}
+                        {{form.image.value}}
+                        {% comment %} <input type="file" name="{{ form.image.value }}" id="{{ form.image.id_for_label }}"> {% endcomment %}
+                        <input
+                            type="file"
+                            name="{{ form.image.name }}"
+                            id="{{ form.image.id_for_label }}"
+                            value="{{form.image.value}}"
+                        >
+                    {% endif %}
                     <span class="form__error">{{ form.image.errors }}</span>
                 </div>
             </div>
 
-            <div class="form__footer">
+            <div
+            class="form__footer">
+            {% if recipe %}
+                <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="#" class="form__ingredient-link">Удалить</a>
+            {% else %}
                 <button class="button button_style_blue">Создать рецепт</button>
+            {% endif %}
             </div>
 
         </form>

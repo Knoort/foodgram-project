@@ -1,12 +1,22 @@
 <nav class="nav">
     <div class="nav__container container">
+        {% with request.resolver_match.url_name as curr_url %}
         <ul class="nav__items list">
-            <li class="nav__item nav__item_disabled"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
-            <li class="nav__item nav__item_disabled"><a href="#" class="nav__link link">Список покупок</a></li>
+            <li class="nav__item nav__item_disabled {% if curr_url == 'index' %} nav__item_active{% endif %}">
+                <a href="{% url 'recipes:index' %}" class="nav__link link">Рецепты</a>
+            </li>
+            <li class="nav__item nav__item_disabled">
+                <a href="#" class="nav__link link">Список покупок</a>
+            </li>
         </ul>
         <ul class="nav__items list">
-            <li class="nav__item"><a href="{% url 'login' %}" class="nav__link link">Войти</a></li>
-            <li class="nav__item"><a href="{% url 'signup' %}" class="button button_style_blue">Создать аккаунт</a></li>
+            <li class="nav__item">
+                <a href="{% url 'login' %}" class="nav__link link">Войти</a>
+            </li>
+            <li class="nav__item">
+                <a href="{% url 'signup' %}" class="button button_style_blue">Создать аккаунт</a>
+            </li>
         </ul>
+        {% endwith %}
     </div>
 </nav>

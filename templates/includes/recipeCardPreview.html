@@ -1,0 +1,8 @@
+{% load recipe_filters %}
+<li class="card-user__item">
+    <div class="recipe">
+        <img src="{{ recipe.image.url }}" alt="{{ recipe|field_verbose_name:'image' }}" class="recipe__image">
+        <h3 class="recipe__title">{{ recipe.name }}</h3>
+        <p class="recipe__text"><span class="icon-time"></span> {{recipe.cooking_time}} мин.</p>
+    </div>
+</li>
