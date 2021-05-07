@@ -62,8 +62,12 @@ class RecipeTag(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Тег',
+        verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+    
+    def __str__(self):
+        return f'{self._meta.verbose_name} {self.display_name}'
+    
 
 
 class Recipe(models.Model):
@@ -121,12 +125,15 @@ class RecipeIngredients(models.Model):
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name='recipeingredients'
+        related_name='recipeingredients',
+        null=True
     )
     amount = models.DecimalField( max_digits=6, decimal_places=1)
 
     class Meta:
         unique_together = 'recipe', 'ingredient'
+        verbose_name = 'Ингредиент рецепта',
+        verbose_name_plural = 'Ингредиенты рецепта'
 
 
 class Favorites(models.Model):
@@ -167,3 +174,23 @@ class Subscriptions(models.Model):
         unique_together = 'user', 'author'
         verbose_name = 'Подписка',
         verbose_name_plural = 'Подписки'
+
+
+class Purchases(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='purchases',
+        verbose_name='Покупатель'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='purchasers',
+        verbose_name='рецепт заказа'
+    )
+    
+    class Meta:
+        unique_together = 'user', 'recipe'
+        verbose_name = 'Закупка',
+        verbose_name_plural = 'Закупки'

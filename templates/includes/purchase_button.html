@@ -1,0 +1,15 @@
+<button
+    class="button button_style_{% if in_purchases %}light-blue-outline{% else %}blue{% endif %}"
+    name="purchases"
+    {% if not in_purchases %}
+        data-out
+    {% endif %}
+>
+    {% if not in_purchases %}
+        <span class="icon-plus button__icon"></span>
+        Добавить в покупки
+    {% else %}
+        <span class="icon-check button__icon"></span>
+        Рецепт добавлен
+    {% endif %}
+</button>

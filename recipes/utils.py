@@ -42,9 +42,11 @@ def get_ingredients_from_post(post_req):
             # Объединение одинаковых ингредиентов списка
             curr_ing_name = post_req[f'nameIngredient_{num}']
             if curr_ing_name in ing_names:
+                print('old: ', ingredients[ing_names[curr_ing_name]]['value'])
+                print('add: ', post_req[f'valueIngredient_{num}'])
                 ingredients[ing_names[curr_ing_name]]['value'] = str(
-                    Decimal(ingredients[ing_names[curr_ing_name]]['value']) +
-                    Decimal(post_req[f'valueIngredient_{num}'])
+                    Decimal(ingredients[ing_names[curr_ing_name]]['value'].replace(',', '.')) +
+                    Decimal(str(post_req[f'valueIngredient_{num}']))#.replace(',', '.'))
                 )
                 continue
             # Новый ингредиент в списке
@@ -70,11 +72,13 @@ def save_recipe(request, form, recipe, ingredients):
     ri_objs = []
     for num, ing in ingredients.items():
         ingredient = get_object_or_404(Ingredient, name=ing['name'])
+        print(num, ' new: ', ing['value'])
         ri_objs.append(RecipeIngredients(
             recipe=recipe,
             ingredient=ingredient,
             amount=str(Decimal(ing['value'].replace(',', '.')))
         ))
+        print(num, ' new: ', ing['value'])
     RecipeIngredients.objects.bulk_create(ri_objs)
     form.save_m2m()
     return recipe

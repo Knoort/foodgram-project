@@ -130,6 +130,10 @@ dmypy.json
 
 static/admin
 media/
+
 migrations/
+!migrations/__init__.py
+
+/db*
 
 -*

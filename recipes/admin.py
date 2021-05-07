@@ -10,5 +10,12 @@ class RecipeIngredientsInline(admin.TabularInline):
 
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientsInline, )
+    list_display = ('id', 'name', 'image', 'author', 'tags', 'pub_date')
+    search_fields = ('name', )
+    list_filter = ('author', 'name', 'tags')
+
+
+class IngredientAdmin(admin.ModelAdmin):
+    search_fields = ('name', )
 
 autoregister('recipes', )

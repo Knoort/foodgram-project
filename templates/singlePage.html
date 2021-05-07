@@ -10,6 +10,7 @@
 
 {% block content %}
     {{recipe.id}}
+    {{following}}
     {% csrf_token %}
     <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
         <img src="{{ recipe.image.url }}" alt="{{ recipe|field_verbose_name:"image" }}" class="single-card__image">
@@ -17,8 +18,12 @@
             <div class="single-card__header-info">
                 <h1 class="single-card__title">{{ recipe.name }}</h1>
                 <div class="single-card__favorite">
-                    <button class="button button_style_none" name="favorites" data-out>
-                        <span class="icon-favorite icon-favorite_big"></span>
+
+                    <button
+                        class="button button_style_none"
+                        name="favorites" {% if not is_favorite %} data-out {% endif %}
+                    >
+                        <span class="icon-favorite icon-favorite_big {% if is_favorite %}icon-favorite_active{% endif %}"></span>
                     </button>
                     <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
                 </div>
@@ -46,13 +51,14 @@
             </div>
             <ul class="single-card__items">
                 <li class="single-card__item">
-                    <button class="button button_style_blue" name="purchases" data-out>
-                    <span class="icon-plus"></span> Добавить в покупки
-                    </button>
+                        {% include 'includes/purchase_button.html' %}        
+                    {% comment %} <button class="button button_style_blue" name="purchases" data-out> {% endcomment %}
+                    {% comment %} <span class="icon-plus"></span> Добавить в покупки
+                    </button> {% endcomment %}
                 </li>
                 {% if user.is_authenticated %}
                     <li class="single-card__item">
-                        {% include 'includes/follow_button.html' with following=following %}
+                        {% include 'includes/follow_button.html' %}
                     </li>
                 {% endif %}
             </ul>

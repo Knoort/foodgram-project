@@ -93,3 +93,10 @@ def cyr_pluralize(obj, num):
     if dig[-1] in ['2', '3', '4']:
         return 'а'
     return 'ов'
+
+
+@register.filter
+def is_in(obj, set):
+    if obj in set:
+        return True
+    return False

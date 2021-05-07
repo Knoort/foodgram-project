@@ -1,3 +1,13 @@
 from django.contrib import admin
+from foodgram.autoregister import autoregister
+from django.contrib.auth import get_user_model
 
-# Register your models here.
+User = get_user_model()
+# from .models import CustomUser
+
+
+class UserAdmin(admin.ModelAdmin):
+    list_filter = ('username', 'email', )
+
+
+autoregister('users', )

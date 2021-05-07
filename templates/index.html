@@ -9,21 +9,20 @@
 {% endblock %}
 
 {% block main_header_title %}
-    {{page_data.name}}
     {% include 'includes/title.html' %}
 {% endblock %}
 
 {% block main_header_content %}
     <ul class="tags">
-        {% for tag in all_tags %}
-            {% include 'includes/filterTags.html' %}
+        {% for tag in page_data.all_tags %}
+            {% include 'includes/filterTags.html' with tags_checked=page_data.tags_checked %}
         {% endfor %}
     </ul>
 {% endblock %}
 
 {% block content %}
 
-    {% if page_data.name == 'author_profile' %}
+    {% if page_data.name == 'author_profile' and user.is_authenticated %}
     {{page_data.author.id}}
         <div class="author-subscribe" data-author="{{page_data.author.id}}">
             <p style="padding: 0 0 2em 0;">
@@ -39,17 +38,16 @@
     </div>
 
     {% if page.has_other_pages %}
-        {% include 'includes/paginator.html' %}
+        {% include 'includes/paginator.html' with tags_checked=page_data.tags_checked %}
     {% endif %}
 
 {% endblock %}
 
 {% block js_block %}
-    <script src="{% static 'js/components/Purchases.js' %}"></script>
-    <script src="{% static 'js/components/Favorites.js' %}"></script>
     <script src="{% static 'js/components/MainCards.js' %}"></script>
-    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/components/Purchases.js' %}"></script>
     <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
     <script src="{% static 'js/api/Api.js' %}"></script>
 
     {% comment %} <script src="{% static 'js/indexAuth.js' %}"></script> {% endcomment %}
@@ -73,7 +71,7 @@
         <script src="{% static 'js/AuthorRecipe.js' %}"></script>
 
     {% elif page_data.name == 'favorites' %}
-
+        <script src="{% static 'js/components/Favorites.js' %}"></script>
         <script src="{% static 'js/components/CardList.js' %}"></script>
         <script src="{% static 'js/favorite.js' %}"></script>
 

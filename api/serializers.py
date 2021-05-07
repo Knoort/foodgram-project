@@ -5,7 +5,8 @@ from recipes.models import (
     Ingredient,
     Favorites,
     Recipe,
-    Subscriptions
+    Subscriptions,
+    Purchases
 )
 
 User = get_user_model()
@@ -36,3 +37,12 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscriptions
         fields = ('author', 'user')
+
+class PurchasesSerializer(serializers.ModelSerializer):
+    # recipe = serializers.PrimaryKeyRelatedField(
+    #     queryset=Recipe.objects.all(),
+    # )
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    class Meta:
+        model = Purchases
+        fields = ('recipe', 'user')

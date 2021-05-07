@@ -14,15 +14,16 @@
 {% endblock %}
 
 {% block content %}
-<div class="card-list">
-    {% for author in page %}
-        {% include 'includes/authorCard.html' with cnt=page_data.previews_cnt %}
-    {% endfor %}
-</div>
+    {% csrf_token %}
+    <div class="card-list">
+        {% for author in page %}
+            {% include 'includes/authorCard.html' with cnt=page_data.previews_cnt %}
+        {% endfor %}
+    </div>
 
-{% if page.has_other_pages %}
-    {% include 'includes/paginator.html' with page=page paginator=paginator %}
-{% endif %}
+    {% if page.has_other_pages %}
+        {% include 'includes/paginator.html' with page=page paginator=paginator %}
+    {% endif %}
 
 {% endblock %}
 
