@@ -10,7 +10,6 @@
 
 {% block content %}
     {{recipe.id}}
-    {{following}}
     {% csrf_token %}
     <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
         <img src="{{ recipe.image.url }}" alt="{{ recipe|field_verbose_name:"image" }}" class="single-card__image">
@@ -42,7 +41,6 @@
                             <span class="icon-user"></span>
                             <a class="card-user__link link" href="{% url 'recipes:author_profile' recipe.author.username %}">
                                 {{ recipe.author.get_full_name|default:recipe.author.username }}
-                                {% comment %} {% include 'includes/author.html' with author=recipe.author %} {% endcomment %}
                             </a>
                         </p>
                     </li>

@@ -21,7 +21,7 @@
     </div>
     <div class="card__footer">
         {% with recipe|is_in:purchases as in_purchases %}
-            {% include 'includes/purchase_button.html' %}        
+            {% include 'includes/purchase_button.html' %}
         {% endwith %}
 
         {% comment %} <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button> {% endcomment %}

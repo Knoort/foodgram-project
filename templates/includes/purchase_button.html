@@ -7,9 +7,9 @@
 >
     {% if not in_purchases %}
         <span class="icon-plus button__icon"></span>
-        Добавить в покупки
+        {{in_purchases}}Добавить в покупки
     {% else %}
         <span class="icon-check button__icon"></span>
-        Рецепт добавлен
+        {{in_purchases}}Рецепт добавлен
     {% endif %}
 </button>
