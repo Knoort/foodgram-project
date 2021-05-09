@@ -49,10 +49,7 @@
             </div>
             <ul class="single-card__items">
                 <li class="single-card__item">
-                        {% include 'includes/purchase_button.html' %}        
-                    {% comment %} <button class="button button_style_blue" name="purchases" data-out> {% endcomment %}
-                    {% comment %} <span class="icon-plus"></span> Добавить в покупки
-                    </button> {% endcomment %}
+                    {% include 'includes/purchase_button.html' %}        
                 </li>
                 {% if user.is_authenticated %}
                     <li class="single-card__item">

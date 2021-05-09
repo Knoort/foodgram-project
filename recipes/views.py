@@ -2,25 +2,32 @@ from urllib.parse import urlencode
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
 from django.db import connection, reset_queries #, transaction
+from django.db.models import Exists, OuterRef
 # from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
 # from uuslug import slugify
-from .models import Recipe, TagChoices
-from .forms import RecipeForm
+
 from foodgram.settings import PAGINATION_PAGE_SIZE, PREVIEWS_COUNT
 
-
-from .models import Ingredient, RecipeIngredients, RecipeTag
+from .forms import RecipeForm
+from .models import (
+    TagChoices,
+    Recipe,
+    Ingredient,
+    RecipeIngredients,
+    RecipeTag
+)
 from .utils import (
     get_ingredients_from_post,
     get_ingredients_from_qs,
-    prepare_and_save_recipe
+    prepare_and_save_recipe,
+    get_purchases_count
 )
 
 User = get_user_model()
-TAGS = [name[0] for name in TagChoices.choices]
+TAGS = TagChoices.values
 
 INDEX = 'index'
 AUTHOR_PROF = 'author_profile'
@@ -68,13 +75,16 @@ def recipes_set(request, author_username=None, page_choice=None):
         ).distinct()
 
     if request.user.is_authenticated:
-        favorites = recipes.filter(admirers__user__id=request.user.id)
+        favorites = recipes.filter(admirers__user=request.user)
+        purchases = recipes.filter(purchasers__user=request.user)
+        recipes = recipes.annotate(
+            in_favorites=Exists(favorites.filter(pk__exact=OuterRef('pk')))
+        ).annotate(
+            in_purchases=Exists(purchases.filter(pk__exact=OuterRef('pk')))
+        )
     else:
         favorites = []
-    purchases = recipes.filter(purchasers__user__username=request.user.username)
-    print('user username:', request.user.username)
-    print('user:', request.user)
-
+        purchases = []
 
     if page_choice == AUTHOR_PROF:
         author = get_object_or_404(User, username=author_username)
@@ -82,16 +92,16 @@ def recipes_set(request, author_username=None, page_choice=None):
         page_data['author'] = author
         if request.user.is_authenticated:
             page_data['following'] = author.follower.filter(
-                user__username=request.user.username
+                user=request.user
                 ).exists()
         else:
             page_data['following'] = False
+
     elif page_choice == FAVORITES:
         if request.user.is_authenticated :
-            recipes = favorites #recipes.filter(admirers__user=request.user)
+            recipes = recipes.filter(id__in=favorites.values('pk'))
         else:
             return redirect('recipes:index')
-
 
     paginator = Paginator(recipes, PAGINATION_PAGE_SIZE)
     page_num = request.GET.get('page')
@@ -101,8 +111,8 @@ def recipes_set(request, author_username=None, page_choice=None):
 
     context = {
         'page_data': page_data,
-        'favorites': favorites,
-        'purchases': purchases,
+        # 'favorites': favorites,
+        'purchases_count': get_purchases_count(request),
         'recipes': recipes,
         'page': page,
         'paginator': paginator
@@ -115,7 +125,7 @@ def subscriptions(request):
     page_data = PAGES_DATA[SUBSCRIPTIONS]
     page_data['previews_cnt'] = PREVIEWS_COUNT
     authors = User.objects.filter(
-        follower__user__id=request.user.id
+        follower__user=request.user
     ).prefetch_related(
         'recipes'
     )
@@ -127,6 +137,7 @@ def subscriptions(request):
     context = {
         'page_data': page_data,
         'authors': authors,
+        'purchases_count': get_purchases_count(request),
         'page': page,
         'paginator': paginator
     }
@@ -136,13 +147,41 @@ def subscriptions(request):
 def purchases(request):
     page_data = PAGES_DATA[PURCHASES]
     recipes = Recipe.objects.filter(purchasers__user__username=request.user.username)
-    print(request.user.id)
     context = {
         'page_data': page_data,
         'recipes': recipes,
+        'purchases_count': recipes.count()
     }
     return render(request, 'shopList.html', context)
 
+
+def recipe_view_redirect(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    return redirect('recipes:recipe_view_slug', recipe_id=recipe.id, slug=recipe.slug)
+
+
+def recipe_view_slug(request, recipe_id, slug):
+    reset_queries()
+    recipe = get_object_or_404(
+        Recipe.objects.select_related('author'),#.prefetch_related('ingredients'),
+        id=recipe_id,
+        slug=slug
+    )
+
+    recipe_ings = recipe.recipeingredients.select_related('ingredient')
+    following = recipe.author.follower.filter(user__id=request.user.id)
+    is_favorite = recipe.admirers.filter(user__id=request.user.id)
+    in_purchases = recipe.purchasers.filter(user__id=request.user.id).exists()
+    # print(connection.queries)
+    context = {
+        'recipe': recipe,
+        'recipe_ings': recipe_ings,
+        'purchases_count': get_purchases_count(request),
+        'following': following,
+        'is_favorite': is_favorite,
+        'in_purchases': in_purchases
+    }
+    return render(request, 'singlePage.html', context)
 
 
 @login_required
@@ -164,13 +203,12 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
         files=request.FILES or None,
         instance=recipe
     )
-
+    # Редактирование рецепта - 1 открытие формы.
     if recipe and not request.POST :
         ingredients = get_ingredients_from_qs(recipe.recipeingredients.all())
+    # Создание рецепта или повторная отправка формы.
     else:
         ingredients = get_ingredients_from_post(request.POST)
-
-    # print('POST tags: ', request.POST.getlist('tags', 'no tags'))
 
     if form.is_valid():
         recipe = prepare_and_save_recipe(request, form, recipe, ingredients)
@@ -181,59 +219,7 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
         'recipe': recipe,
         'form': form,
         'all_tags': all_tags,
-        'ingredients': ingredients
+        'ingredients': ingredients,
+        'purchases_count': get_purchases_count(request),
     }
-    print(request.POST)
-    print(ingredients)
     return render(request, 'formRecipe.html', context)
-
-
-def recipe_view_redirect(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    return redirect('recipes:recipe_view_slug', recipe_id=recipe.id, slug=recipe.slug)
-
-
-def recipe_view_slug(request, recipe_id, slug):
-    reset_queries()
-    recipe = get_object_or_404(
-        Recipe.objects.select_related('author'),#.prefetch_related('ingredients'),
-        id=recipe_id,
-        slug=slug
-    )
-    recipe_ings = recipe.recipeingredients.select_related('ingredient')
-    following = recipe.author.follower.filter(user__id=request.user.id)
-    is_favorite = recipe.admirers.filter(user__id=request.user.id)
-    in_purchases = recipe.purchasers.filter(user__id=request.user.id)
-    # print(connection.queries)
-    context = {
-        'recipe': recipe,
-        'recipe_ings': recipe_ings,
-        'following': following,
-        'is_favorite': is_favorite,
-        'in_purchases': in_purchases
-    }
-    return render(request, 'singlePage.html', context)
-
-
-
-# def new_recipe(request):
-#     form = RecipeForm(
-#         request.POST or None,
-#         files=request.FILES or None,
-#         instance=None
-#     )
-#     ingredients = get_ingredients_from_post(request.POST)
-#     print('getted:', ingredients)
-
-#     if form.is_valid():
-#         recipe = prepare_and_save_recipe(request, form, None, ingredients)
-#         return redirect('recipe_view_slug', recipe_id=recipe.id, slug=recipe.slug)
-
-#     all_tags = RecipeTag.objects.all()
-
-#     context = {
-#         'form': form,
-#         'all_tags': all_tags,
-#         'ingredients': ingredients,
-#     }
-#     return render(request, 'formRecipe.html', context)

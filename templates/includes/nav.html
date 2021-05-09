@@ -16,7 +16,7 @@
             </li>
             <li class="nav__item{% if curr_url == 'purchases' %} nav__item_active{% endif %}">
                 <a href="{% url 'recipes:purchases' %}" class="nav__link link">Список покупок</a>
-                <span class="badge badge_style_blue nav__badge" id="counter">{{purchases.count}}</span>
+                <span class="badge badge_style_blue nav__badge" id="counter">{{purchases_count}}</span>
             </li>
         </ul>
         <ul class="nav__items list">

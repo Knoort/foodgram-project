@@ -93,3 +93,10 @@ def prepare_and_save_recipe(request, form, recipe, ingredients):
 
     except IntegrityError:
         raise HttpResponseBadRequest
+
+
+def get_purchases_count(request):
+    if request.user.is_authenticated:
+        return request.user.purchases.count()
+    # Здесь будет неавторизованный юзер
+    return 0

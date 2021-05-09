@@ -109,7 +109,7 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
     
     def __str__(self):
-        return self.name
+        return f'{self.pk}'
 
     def __iter__(self):
         for field in self._meta.fields:
