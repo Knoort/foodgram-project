@@ -2,7 +2,7 @@ from urllib.parse import urlencode
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
 from django.db import connection, reset_queries #, transaction
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Min
 # from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -23,7 +23,9 @@ from .utils import (
     get_ingredients_from_post,
     get_ingredients_from_qs,
     prepare_and_save_recipe,
-    get_purchases_count
+    get_purchases_count,
+    get_purchases_not_auth,
+    products_list
 )
 
 User = get_user_model()
@@ -79,12 +81,13 @@ def recipes_set(request, author_username=None, page_choice=None):
         purchases = recipes.filter(purchasers__user=request.user)
         recipes = recipes.annotate(
             in_favorites=Exists(favorites.filter(pk__exact=OuterRef('pk')))
-        ).annotate(
-            in_purchases=Exists(purchases.filter(pk__exact=OuterRef('pk')))
         )
     else:
-        favorites = []
-        purchases = []
+        purchases = get_purchases_not_auth(request)
+
+    recipes = recipes.annotate(
+        in_purchases=Exists(purchases.filter(pk__exact=OuterRef('pk')))
+    )
 
     if page_choice == AUTHOR_PROF:
         author = get_object_or_404(User, username=author_username)
@@ -99,7 +102,7 @@ def recipes_set(request, author_username=None, page_choice=None):
 
     elif page_choice == FAVORITES:
         if request.user.is_authenticated :
-            recipes = recipes.filter(id__in=favorites.values('pk'))
+            recipes = recipes.filter(pk__in=favorites.values('pk'))
         else:
             return redirect('recipes:index')
 
@@ -111,13 +114,63 @@ def recipes_set(request, author_username=None, page_choice=None):
 
     context = {
         'page_data': page_data,
-        # 'favorites': favorites,
-        'purchases_count': get_purchases_count(request),
         'recipes': recipes,
+        'purchases_count': purchases.count(),
         'page': page,
         'paginator': paginator
     }
     return render(request, 'index.html', context)
+
+
+def purchases(request, download=False):
+    page_data = PAGES_DATA[PURCHASES]
+    if request.user.is_authenticated:    
+        recipes = Recipe.objects.filter(purchasers__user=request.user)
+    else:
+        recipes = get_purchases_not_auth(request)
+    if download:
+        return products_list(recipes)
+    context = {
+        'page_data': page_data,
+        'recipes': recipes,
+        'purchases_count': recipes.count()
+    }
+    return render(request, 'shopList.html', context)
+
+
+def recipe_view_redirect(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    return redirect('recipes:recipe_view_slug', recipe_id=recipe.id, slug=recipe.slug)
+
+
+def recipe_view_slug(request, recipe_id, slug):
+    reset_queries()
+    recipe = get_object_or_404(
+        Recipe.objects.select_related('author'),#.prefetch_related('ingredients'),
+        id=recipe_id,
+        slug=slug
+    )
+    recipe_ings = recipe.recipeingredients.select_related('ingredient')
+    if request.user.is_authenticated:
+        following = recipe.author.follower.filter(user=request.user)
+        is_favorite = recipe.admirers.filter(user=request.user)
+        user_purchases = Recipe.objects.filter(purchasers__user=request.user)
+    else:
+        following = False
+        is_favorite = False
+        user_purchases = get_purchases_not_auth(request)
+
+    in_purchases = recipe in user_purchases
+    # print(connection.queries)
+    context = {
+        'recipe': recipe,
+        'recipe_ings': recipe_ings,
+        'purchases_count': user_purchases.count(),
+        'following': following,
+        'is_favorite': is_favorite,
+        'in_purchases': in_purchases
+    }
+    return render(request, 'singlePage.html', context)
 
 
 @login_required
@@ -142,46 +195,6 @@ def subscriptions(request):
         'paginator': paginator
     }
     return render(request, 'myFollow.html', context)
-
-
-def purchases(request):
-    page_data = PAGES_DATA[PURCHASES]
-    recipes = Recipe.objects.filter(purchasers__user__username=request.user.username)
-    context = {
-        'page_data': page_data,
-        'recipes': recipes,
-        'purchases_count': recipes.count()
-    }
-    return render(request, 'shopList.html', context)
-
-
-def recipe_view_redirect(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    return redirect('recipes:recipe_view_slug', recipe_id=recipe.id, slug=recipe.slug)
-
-
-def recipe_view_slug(request, recipe_id, slug):
-    reset_queries()
-    recipe = get_object_or_404(
-        Recipe.objects.select_related('author'),#.prefetch_related('ingredients'),
-        id=recipe_id,
-        slug=slug
-    )
-
-    recipe_ings = recipe.recipeingredients.select_related('ingredient')
-    following = recipe.author.follower.filter(user__id=request.user.id)
-    is_favorite = recipe.admirers.filter(user__id=request.user.id)
-    in_purchases = recipe.purchasers.filter(user__id=request.user.id).exists()
-    # print(connection.queries)
-    context = {
-        'recipe': recipe,
-        'recipe_ings': recipe_ings,
-        'purchases_count': get_purchases_count(request),
-        'following': following,
-        'is_favorite': is_favorite,
-        'in_purchases': in_purchases
-    }
-    return render(request, 'singlePage.html', context)
 
 
 @login_required

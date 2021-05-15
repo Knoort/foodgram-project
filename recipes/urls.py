@@ -25,6 +25,7 @@ subscriptions_urls = [
 ]
 purchases_urls = [
     path('', purchases, name=PURCHASES),
+    path('download/', purchases, name='download', kwargs={'download': True}),
     # path('download', purchases_download, name='download')
 ]
 

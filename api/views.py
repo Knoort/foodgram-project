@@ -45,7 +45,6 @@ class CreateDestroyViewset(
         """
         Добавлено поле user для поиска объекта
         """
-        print('purchases_api')
         queryset = self.filter_queryset(self.get_queryset())
 
         # Perform the lookup filtering.
@@ -76,13 +75,14 @@ class CreateDestroyViewset(
             return
 
         purchases = self.request.session.get('purchases')
-        purchases = [] if not purchases else purchases
-        print('session purchases', purchases)
-        self.request.session.update({
-            'purchases': purchases + [serializer.validated_data['recipe'].id]
-        })
-        print(self.request.session.get('purchases', []))
-
+        if not type(purchases) is list:
+            purchases = []
+        recipe_id = serializer.validated_data['recipe'].id
+        if recipe_id not in purchases:
+            self.request.session.update({
+                'purchases': purchases + [recipe_id]
+            })
+        print(self.request.session.get('purchases'))
 
     def destroy(self, request, **kwargs):
         if request.user.is_authenticated:
@@ -123,10 +123,8 @@ class SubscriptionsVievSet(CreateDestroyViewset):
 
 class PurchasesViewSet(
     mixins.ListModelMixin,
-    # NotAuthorizedCreateModelMixin,
     CreateDestroyViewset
     ):
     queryset = Purchases.objects.all()
-    # permission_classes = [IsAuthenticated]
     serializer_class = PurchasesSerializer
     lookup_field = 'recipe'

@@ -3,6 +3,7 @@
     {{recipe.id}}
     {% csrf_token %}
     <a href="{% url 'recipes:recipe_view_redirect' recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe|field_verbose_name:"image" }}" class="card__image"></a>
+
     <div class="card__body">
         <a class="card__title link" href="{% url 'recipes:recipe_view_redirect' recipe.id %}" target="_blank">{{ recipe.name }}</a>
         <ul class="card__items">
@@ -14,22 +15,19 @@
             <p class="card__text"><span class="icon-time"></span> {{recipe.cooking_time}} мин.</p>
             <p class="card__text"><span class="icon-user"></span>
                 <a href="{% url 'recipes:author_profile' recipe.author.username %}" style="color: black">
-                     {{ recipe.author.get_full_name|default:recipe.author.username }}
+                    {{ recipe.author.get_full_name|default:recipe.author.username }}
                 </a>
             </p>
         </div>
     </div>
-    <div class="card__footer">
-        {% comment %} {% with recipe|is_in:purchases as in_purchases %} {% endcomment %}
-        {% with recipe.in_purchases as in_purchases %}
-            {% include 'includes/purchase_button.html' %}
-        {% endwith %}
 
-        {% comment %} <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button> {% endcomment %}
+    <div class="card__footer">
+
+        {% include 'includes/purchase_button.html' with in_purchases=recipe.in_purchases %}
+
         {% if user.is_authenticated %}
-            <button class="button button_style_none" name="favorites"{% if not recipe.in_favorites %} data-out{% endif %}>
-                <span class="icon-favorite {% if recipe.in_favorites %}icon-favorite_active{% endif %}"></span>
-            </button>
+            {% include 'includes/favorite_button.html' with is_favorite=recipe.in_favorites big=False %}
         {% endif %}
+
     </div>
 </div>  

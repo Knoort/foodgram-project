@@ -131,6 +131,7 @@ dmypy.json
 static/admin
 media/
 
+download
 migrations/
 !migrations/__init__.py
 

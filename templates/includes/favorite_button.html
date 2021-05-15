@@ -1,0 +1,9 @@
+<button
+    class="button button_style_none"
+    name="favorites"
+    {% if not is_favorite %}data-out{% endif %}
+>
+    <span
+        class="icon-favorite {% if big %}icon-favorite_big{% endif %}{% if is_favorite %} icon-favorite_active{% endif %}">
+    </span>
+</button>

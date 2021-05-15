@@ -20,7 +20,7 @@
                 {% include 'includes/recipePurchasePreview.html' %}
             {% endfor %}
         </ul>
-        <a href="#"><button class="button button_style_blue">Скачать список</button></a>
+        <a href="{% url 'recipes:download' %}"><button class="button button_style_blue">Скачать список</button></a>
     </div>
 
 {% endblock %}

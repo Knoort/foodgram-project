@@ -14,25 +14,24 @@
     <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
         <img src="{{ recipe.image.url }}" alt="{{ recipe|field_verbose_name:"image" }}" class="single-card__image">
         <div class="single-card__info">
+
             <div class="single-card__header-info">
                 <h1 class="single-card__title">{{ recipe.name }}</h1>
-                <div class="single-card__favorite">
 
-                    <button
-                        class="button button_style_none"
-                        name="favorites" {% if not is_favorite %} data-out {% endif %}
-                    >
-                        <span class="icon-favorite icon-favorite_big {% if is_favorite %}icon-favorite_active{% endif %}"></span>
-                    </button>
+                {% if user.is_authenticated %}
+                <div class="single-card__favorite">
+                    {% include 'includes/favorite_button.html' with is_favorite=is_favorite big=True %}
                     <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
                 </div>
+                {% endif %}
             </div>
+
             <ul class="single-card__items">
-                    {#{ recipe.tags.values }#}
                 {% for tag in recipe.tags.values %}
                     <li class="single-card__item"><span class="badge badge_style_{{ tag.color }}">{{ tag.display_name }}</span></li>
                 {% endfor %}
             </ul>
+
             <div class="single-card__items single-card__items_column">
                 <p class="single-card__text"><span class="icon-time"> </span> {{ recipe.cooking_time }} мин.</p>
                 <ul class="single-card__items">
@@ -47,6 +46,7 @@
                     <li class="single-card__item"><a style="margin-left: 2.5em" href="{% url 'recipes:edit_recipe' recipe.id recipe.slug %}" class="single-card__text">Редактировать рецепт</a></li>
                 </ul>
             </div>
+
             <ul class="single-card__items">
                 <li class="single-card__item">
                     {% include 'includes/purchase_button.html' %}        
@@ -57,6 +57,7 @@
                     </li>
                 {% endif %}
             </ul>
+
             <div class="single-card__section">
                 <h3 class="single-card__section-title">{{recipe_ings.0.ingredient|obj_verbose_name_plural }}:</h3>
                 <div class="single-card__items single-card__items_column">
@@ -65,10 +66,12 @@
                 {% endfor %}
                 </div>
             </div>
+
             <div class="single-card__section">
                 <h3 class="single-card__section-title">{{ recipe|field_verbose_name:"description" }}:</h3>
                 <p class=" single-card__section-text">{{ recipe.description }}</p>
             </div>
+
         </div>
     </div>
 {% endblock %}

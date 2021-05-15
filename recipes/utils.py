@@ -1,15 +1,20 @@
+import os, mimetypes, tempfile
+
 from decimal import Decimal
+from pathlib import Path
 
 from django.shortcuts import get_object_or_404
 from django.db import transaction, IntegrityError
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.utils.text import slugify
 # from django.utils import encoding
 # from django.template import defaultfilters -> slugify
 # import unidecode
 from unidecode import unidecode
 
-from .models import Ingredient, RecipeIngredients
+from .models import Ingredient, Recipe, RecipeIngredients
+from foodgram.settings import DOWNLOAD_ROOT
+
 
 def decode_slugify(txt):
     return slugify(unidecode(txt))
@@ -42,8 +47,8 @@ def get_ingredients_from_post(post_req):
             # Объединение одинаковых ингредиентов списка
             curr_ing_name = post_req[f'nameIngredient_{num}']
             if curr_ing_name in ing_names:
-                print('old: ', ingredients[ing_names[curr_ing_name]]['value'])
-                print('add: ', post_req[f'valueIngredient_{num}'])
+                # print('old: ', ingredients[ing_names[curr_ing_name]]['value'])
+                # print('add: ', post_req[f'valueIngredient_{num}'])
                 ingredients[ing_names[curr_ing_name]]['value'] = str(
                     Decimal(ingredients[ing_names[curr_ing_name]]['value'].replace(',', '.')) +
                     Decimal(str(post_req[f'valueIngredient_{num}']))#.replace(',', '.'))
@@ -100,3 +105,43 @@ def get_purchases_count(request):
         return request.user.purchases.count()
     # Здесь будет неавторизованный юзер
     return 0
+
+
+def get_purchases_not_auth(request):
+    purchases_list = request.session.get('purchases')
+    if not type(purchases_list) is list:
+        purchases_list = []
+    purchases = Recipe.objects.filter(pk__in=purchases_list)
+    return purchases
+
+
+def products_list(recipes):
+    filename = 'products_list.txt'
+    all_ings = {}
+    for recipe in recipes:
+        for recipe_ing in recipe.recipeingredients.all():
+            curr_name = recipe_ing.ingredient.name
+            if curr_name in all_ings:
+                all_ings[curr_name]['value'] = str(
+                    Decimal(all_ings[curr_name]['value']) +
+                    Decimal(recipe_ing.amount)
+                )
+                # В рецепте ингредиенты всегда уникальны
+                continue
+            all_ings[curr_name] = {
+                'value': recipe_ing.amount,
+                'units': recipe_ing.ingredient.units
+            }
+    tpf = tempfile.NamedTemporaryFile(mode='w+')
+    fl_path = os.path.join(tempfile.gettempdir(), tpf.name)
+    print(fl_path)
+    tpf.write("Список продуктов для закупки:\n \n")
+    for ing_name, ing in all_ings.items():
+        tpf.write(f"{ing_name}: {ing['value']} {ing['units']}" + '\n')
+    tpf.seek(0)
+    if os.path.exists(fl_path):
+        mime_type, _ = mimetypes.guess_type(fl_path)
+        response = HttpResponse(tpf.read(), content_type=mime_type)
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        return response
+    raise Http404
