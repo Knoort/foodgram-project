@@ -1,12 +1,13 @@
 from django.urls import include, path, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
-from .views import SignUp
 from django.contrib.auth.views import (
     PasswordChangeView,
     PasswordResetView,
     PasswordResetConfirmView
 )
+
+from .views import SignUp
 
 app_name = 'users'
 

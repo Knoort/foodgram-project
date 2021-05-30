@@ -23,8 +23,8 @@ from .utils import (
     get_ingredients_from_post,
     get_ingredients_from_qs,
     prepare_and_save_recipe,
-    get_purchases_count,
-    get_purchases_not_auth,
+    # get_purchases_count,
+    get_purchases,
     products_list
 )
 
@@ -78,13 +78,12 @@ def recipes_set(request, author_username=None, page_choice=None):
 
     if request.user.is_authenticated:
         favorites = recipes.filter(admirers__user=request.user)
-        purchases = recipes.filter(purchasers__user=request.user)
+        # purchases = recipes.filter(purchasers__user=request.user)
         recipes = recipes.annotate(
             in_favorites=Exists(favorites.filter(pk__exact=OuterRef('pk')))
         )
-    else:
-        purchases = get_purchases_not_auth(request)
-
+    
+    purchases = get_purchases(request)
     recipes = recipes.annotate(
         in_purchases=Exists(purchases.filter(pk__exact=OuterRef('pk')))
     )
@@ -124,18 +123,21 @@ def recipes_set(request, author_username=None, page_choice=None):
 
 def purchases(request, download=False):
     page_data = PAGES_DATA[PURCHASES]
-    if request.user.is_authenticated:    
-        recipes = Recipe.objects.filter(purchasers__user=request.user)
-    else:
-        recipes = get_purchases_not_auth(request)
+    purchases = get_purchases(request)
+
     if download:
-        return products_list(recipes)
+        return products_list(purchases)
+
     context = {
         'page_data': page_data,
-        'recipes': recipes,
-        'purchases_count': recipes.count()
+        'recipes': purchases,
+        'purchases_count': purchases.count()
     }
     return render(request, 'shopList.html', context)
+
+
+def get_purchases_count(request):
+    return get_purchases(request).count()
 
 
 def recipe_view_redirect(request, recipe_id):
@@ -154,12 +156,12 @@ def recipe_view_slug(request, recipe_id, slug):
     if request.user.is_authenticated:
         following = recipe.author.follower.filter(user=request.user)
         is_favorite = recipe.admirers.filter(user=request.user)
-        user_purchases = Recipe.objects.filter(purchasers__user=request.user)
+        # user_purchases = Recipe.objects.filter(purchasers__user=request.user)
     else:
         following = False
         is_favorite = False
-        user_purchases = get_purchases_not_auth(request)
 
+    user_purchases = get_purchases(request)
     in_purchases = recipe in user_purchases
     # print(connection.queries)
     context = {
@@ -190,7 +192,7 @@ def subscriptions(request):
     context = {
         'page_data': page_data,
         'authors': authors,
-        'purchases_count': get_purchases_count(request),
+        'purchases_count': get_purchases(request).count(),
         'page': page,
         'paginator': paginator
     }
@@ -198,18 +200,33 @@ def subscriptions(request):
 
 
 @login_required
+def delete_recipe(request, recipe_id=None, confirm=None):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if confirm:
+        recipe.delete()
+        return redirect('recipes:index')
+
+    context = {
+        'recipe': recipe,
+        'purchases_count': get_purchases(request).count(),
+    }
+    return render(request, 'deleteRecipeConfirm.html', context)
+
+
+@login_required
 def new_edit_recipe(request, recipe_id=None, slug=None):
     recipe = get_object_or_404(
-        Recipe,id=recipe_id
+        Recipe,
+        id=recipe_id
         ) if recipe_id else None
 
-    # Если редактирование не автором и не суперюзером, то отбой
+    # Если попытка редактирования не автором и не суперюзером, то отбой
     if (
         recipe and
         (request.user != recipe.author) and
         not request.user.is_superuser
     ):
-        return redirect('recipe_view_redirect', recipe_id=recipe.id)
+        return redirect('recipes:recipe_view_redirect', recipe_id=recipe.id)
 
     form = RecipeForm(
         request.POST or None,
@@ -233,6 +250,6 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
         'form': form,
         'all_tags': all_tags,
         'ingredients': ingredients,
-        'purchases_count': get_purchases_count(request),
+        'purchases_count': get_purchases(request).count(),
     }
     return render(request, 'formRecipe.html', context)

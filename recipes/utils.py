@@ -60,7 +60,7 @@ def get_ingredients_from_post(post_req):
                 'value': post_req[f'valueIngredient_{num}'],
                 'units': post_req[f'unitsIngredient_{num}'],
             }
-            ing_names.update({curr_ing_name: num })
+            ing_names.update({curr_ing_name: num})
             # ing_obj = get_object_or_404(Ingredient, name=val)
     return ingredients
 
@@ -100,14 +100,16 @@ def prepare_and_save_recipe(request, form, recipe, ingredients):
         raise HttpResponseBadRequest
 
 
-def get_purchases_count(request):
+# def get_purchases_count(request):
+#     if request.user.is_authenticated:
+#         return request.user.purchases.count()
+#     return 0
+
+
+def get_purchases(request):
     if request.user.is_authenticated:
-        return request.user.purchases.count()
-    # Здесь будет неавторизованный юзер
-    return 0
+        return Recipe.objects.filter(purchasers__user=request.user)
 
-
-def get_purchases_not_auth(request):
     purchases_list = request.session.get('purchases')
     if not type(purchases_list) is list:
         purchases_list = []

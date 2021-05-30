@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Удаление рецепта {% endblock %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock %}
+
+{% block main_header_title %} {{recipe.name}} {% endblock %}
+{% block main_header_content %}{% endblock %}
+{% block content %}
+    <div class="custom-center-block">
+        <p class="custom-text-block">Рецепт будет безвозвратно удален, вы уверены?</p>
+        <br>
+        <div class="custom-button-block">
+            <a
+                href="{% url 'recipes:delete_recipe_confirm' recipe.id %}"
+                class="button button_style_blue">Все верно, удалить рецепт
+            </a>
+            <a
+                href="{% url 'recipes:recipe_view_redirect' recipe.id %}"
+                class="button button_style_light-blue">Нет, я передумал!
+            </a>
+        </div>
+    </div>
+{% endblock %}

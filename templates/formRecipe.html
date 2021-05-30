@@ -117,17 +117,14 @@
                     <span class="form__error">{{ form.description.errors }}</span>
                 </div>
             </div>
-            {% comment %} {{form.image}} {% endcomment %}
             <div class="form__group">
                 <label for="{{ form.image.id_for_label }}" class="form__label">{{ form.image.label }}</label>
-                {% comment %} <span class="form__label">{{ form.image.label }}</span> {% endcomment %}
                 <div class="form__field-group">
                     {% if recipe %}
                         {{form.image}}
                     {% else %}
                         {{form.image.name}}
                         {{form.image.value}}
-                        {% comment %} <input type="file" name="{{ form.image.value }}" id="{{ form.image.id_for_label }}"> {% endcomment %}
                         <input
                             type="file"
                             name="{{ form.image.name }}"
@@ -142,7 +139,12 @@
             <div
             class="form__footer">
             {% if recipe %}
-                <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="#" class="form__ingredient-link">Удалить</a>
+                <button class="button button_style_blue">Сохранить</button>
+                <a
+                    style="margin-left: 2.5em"
+                    href="{% url 'recipes:delete_recipe' recipe.id %}"
+                    class="form__ingredient-link">Удалить
+                </a>
             {% else %}
                 <button class="button button_style_blue">Создать рецепт</button>
             {% endif %}
