@@ -32,11 +32,11 @@ purchases_urls = [
 urlpatterns = [
     path('', recipes_set, name=INDEX, kwargs={'page_choice': INDEX}),
 
-    path('new/', new_edit_recipe, name='new_recipe'),
     path('favorites/', include(favorites_urls)),
     path('subscriptions/', include(subscriptions_urls)),
     path('purchases/', include(purchases_urls)),
 
+    path('new/', new_edit_recipe, name='new_recipe'),
     path(
         '<int:recipe_id>/delete/',
         delete_recipe,
@@ -51,7 +51,6 @@ urlpatterns = [
     ),
     path('<int:recipe_id>/<str:slug>/edit/', new_edit_recipe, name='edit_recipe'),
     path('<int:recipe_id>/<str:slug>/', recipe_view_slug, name='recipe_view_slug'),
-
     path('<int:recipe_id>/', recipe_view_redirect, name='recipe_view_redirect'),
 
     path(
@@ -61,4 +60,3 @@ urlpatterns = [
         kwargs={'page_choice': AUTHOR_PROF}
     ),
 ]
-

@@ -14,7 +14,7 @@ from .serializers import (
     PurchasesSerializer
 )
 
-# Create your views here.
+
 class IngredientViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
@@ -23,7 +23,6 @@ class IngredientViewSet(
     serializer_class = IngredientSerializer
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
     search_fields = ('^name', )
-    # filterset_fields = ['^name']
 
 
 class CreateDestroyViewset(
@@ -104,8 +103,6 @@ class CreateDestroyViewset(
         print(request.session.get('purchases'))
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-# class NotAuthorizedCreateModelMixin:
 
 class FavoritesViewSet(CreateDestroyViewset):
     queryset = Favorites.objects.all()

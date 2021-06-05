@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from django.db import models
-# from autoslug import AutoSlugField
+from django.db.models import F, Q
+
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -41,13 +42,12 @@ class ColorChoices(models.TextChoices):
 
 
 class RecipeTag(models.Model):
-
     name = models.CharField(
+        'Тип приема пищи',
         max_length=20,
         blank=False,
         unique=True,
         choices=TagChoices.choices,
-        verbose_name='Тип приема пищи'
     )
     display_name = models.CharField(
         'Имя тега для шаблона',
@@ -58,7 +58,6 @@ class RecipeTag(models.Model):
         max_length=20,
         blank=False,
         choices=ColorChoices.choices,
-#        verbose_name='Цвет тега'
     )
 
     class Meta:
@@ -68,7 +67,6 @@ class RecipeTag(models.Model):
     def __str__(self):
         return f'{self._meta.verbose_name} {self.display_name}'
     
-
 
 class Recipe(models.Model):
     name = models.CharField(
@@ -89,13 +87,19 @@ class Recipe(models.Model):
         through='RecipeIngredients',
         blank=True
     )
-    cooking_time = models.PositiveSmallIntegerField(verbose_name='Время приготовления')
+    cooking_time = models.PositiveSmallIntegerField(
+        verbose_name='Время приготовления'
+    )
     slug = models.SlugField(
         max_length=50,
         auto_created=True,
         allow_unicode=True
     )
-    tags = models.ManyToManyField('RecipeTag', blank=False, related_name='recipes')
+    tags = models.ManyToManyField(
+        'RecipeTag',
+        blank=False,
+        related_name='recipes'
+    )
     pub_date = models.DateTimeField(
         'Дата публикации',
         null=True,
@@ -107,7 +111,7 @@ class Recipe(models.Model):
         ordering = ('-pub_date', )
         verbose_name = 'Рецепт',
         verbose_name_plural = 'Рецепты'
-    
+
     def __str__(self):
         return f'{self.pk}'
 
@@ -174,6 +178,12 @@ class Subscriptions(models.Model):
         unique_together = 'user', 'author'
         verbose_name = 'Подписка',
         verbose_name_plural = 'Подписки'
+        constraints = [
+            models.CheckConstraint(
+                check=~Q(user=F('author')),
+                name='NotSubscriptItself'
+            )
+        ]
 
 
 class Purchases(models.Model):

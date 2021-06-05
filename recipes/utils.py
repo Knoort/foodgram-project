@@ -41,7 +41,6 @@ def get_ingredients_from_post(post_req):
 
     for key, val in post_req.items():
         if key.startswith('nameIngredient'):
-            # print(key, val)
             num = key.split('_')[1]
 
             # Объединение одинаковых ингредиентов списка
@@ -51,7 +50,7 @@ def get_ingredients_from_post(post_req):
                 # print('add: ', post_req[f'valueIngredient_{num}'])
                 ingredients[ing_names[curr_ing_name]]['value'] = str(
                     Decimal(ingredients[ing_names[curr_ing_name]]['value'].replace(',', '.')) +
-                    Decimal(str(post_req[f'valueIngredient_{num}']))#.replace(',', '.'))
+                    Decimal(str(post_req[f'valueIngredient_{num}']))
                 )
                 continue
             # Новый ингредиент в списке
@@ -61,7 +60,6 @@ def get_ingredients_from_post(post_req):
                 'units': post_req[f'unitsIngredient_{num}'],
             }
             ing_names.update({curr_ing_name: num})
-            # ing_obj = get_object_or_404(Ingredient, name=val)
     return ingredients
 
 
@@ -98,12 +96,6 @@ def prepare_and_save_recipe(request, form, recipe, ingredients):
 
     except IntegrityError:
         raise HttpResponseBadRequest
-
-
-# def get_purchases_count(request):
-#     if request.user.is_authenticated:
-#         return request.user.purchases.count()
-#     return 0
 
 
 def get_purchases(request):

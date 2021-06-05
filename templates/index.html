@@ -22,7 +22,7 @@
 
 {% block content %}
 
-    {% if page_data.name == 'author_profile' and user.is_authenticated %}
+    {% if page_data.name == 'author_profile' and user.is_authenticated and page_data.author.id != user.id %}
     {{page_data.author.id}}
         <div class="author-subscribe" data-author="{{page_data.author.id}}">
             <p style="padding: 0 0 2em 0;">
@@ -51,12 +51,7 @@
     <script src="{% static 'js/api/Api.js' %}"></script>
     <script src="{% static 'js/components/Favorites.js' %}"></script>
 
-    {% comment %} <script src="{% static 'js/indexAuth.js' %}"></script> {% endcomment %}
-    {% comment %} <script src="{% static 'js/components/CardList.js' %}"></script> {% endcomment %}
-    {% comment %} <script src="{% static 'js/favorite.js' %}"></script> {% endcomment %}
-
     {% if page_data.name == 'index' %}
-
         <script src="{% static 'js/components/CardList.js' %}"></script>
 
         {% if user.is_authenticated %}
@@ -66,7 +61,6 @@
         {% endif %}
 
     {% elif page_data.name == 'author_profile' %}
-
         <script src="{% static 'js/components/Subscribe.js' %}"></script>
         <script src="{% static 'js/components/AuthorRecipe.js' %}"></script>
         <script src="{% static 'js/AuthorRecipe.js' %}"></script>

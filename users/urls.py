@@ -1,5 +1,5 @@
 from django.urls import include, path, reverse_lazy
-from django.utils.translation import gettext_lazy as _
+# from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.views import (
     PasswordChangeView,
@@ -13,10 +13,7 @@ app_name = 'users'
 
 
 urlpatterns = [
-    # path() для страницы регистрации нового пользователя
-    # её полный адрес будет auth/signup/, но префикс auth/ обрабатывается в головном urls.py
     path("signup/", SignUp.as_view(), name="signup"),
-    
     path(
         'password_change/',
         PasswordChangeView.as_view(

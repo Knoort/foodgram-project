@@ -78,7 +78,6 @@ def recipes_set(request, author_username=None, page_choice=None):
 
     if request.user.is_authenticated:
         favorites = recipes.filter(admirers__user=request.user)
-        # purchases = recipes.filter(purchasers__user=request.user)
         recipes = recipes.annotate(
             in_favorites=Exists(favorites.filter(pk__exact=OuterRef('pk')))
         )
@@ -156,7 +155,6 @@ def recipe_view_slug(request, recipe_id, slug):
     if request.user.is_authenticated:
         following = recipe.author.follower.filter(user=request.user)
         is_favorite = recipe.admirers.filter(user=request.user)
-        # user_purchases = Recipe.objects.filter(purchasers__user=request.user)
     else:
         following = False
         is_favorite = False
