@@ -12,6 +12,7 @@ from recipes.models import (
 
 User = get_user_model()
 
+
 class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -28,22 +29,16 @@ class FavoritesSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionsSerializer(serializers.ModelSerializer):
-    # author = serializers.PrimaryKeyRelatedField(
-    #     read_only=True,
-    #     # queryset=User.objects.all()
-    # )
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Subscriptions
         fields = ('author', 'user')
 
-    def validate_author(self, author):
-        # print('validate author: ', author)
-        return author
-
     def validate(self, attrs):
-        if attrs.get('author', None) == attrs.get('user', None):
+        author = attrs.get('author', None)
+        user = attrs.get('user', None)
+        if author and author == user:
             raise serializers.ValidationError(
                 'You cannot follow Yourself!'
             )
@@ -51,18 +46,8 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         
 
 class PurchasesSerializer(serializers.ModelSerializer):
-    # recipe = serializers.IntegerField()
-    # recipe = serializers.SerializerMethodField()
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Purchases
         fields = ('recipe', 'user', )
-    
-    def validate_recipe(self, recipe):
-        print('validate recipe: ', recipe)
-        return recipe
-    
-    def validate_user(self, user):
-        print('validate user: ', user)
-        return user

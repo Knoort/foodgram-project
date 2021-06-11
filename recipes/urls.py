@@ -43,15 +43,25 @@ urlpatterns = [
         name='delete_recipe',
         kwargs={'confirm': False}
     ),
-        path(
+    path(
         '<int:recipe_id>/delete_confirm/',
         delete_recipe,
         name='delete_recipe_confirm',
         kwargs={'confirm': True}
     ),
-    path('<int:recipe_id>/<str:slug>/edit/', new_edit_recipe, name='edit_recipe'),
-    path('<int:recipe_id>/<str:slug>/', recipe_view_slug, name='recipe_view_slug'),
-    path('<int:recipe_id>/', recipe_view_redirect, name='recipe_view_redirect'),
+    path(
+        '<int:recipe_id>/<str:slug>/edit/',
+        new_edit_recipe,
+        name='edit_recipe'
+    ),
+    path(
+        '<int:recipe_id>/<str:slug>/',
+        recipe_view_slug,
+        name='recipe_view_slug'
+    ),
+    path(
+        '<int:recipe_id>/', recipe_view_redirect, name='recipe_view_redirect'
+    ),
 
     path(
         '<str:author_username>/',

@@ -16,16 +16,16 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv_path = os.path.join(BASE_DIR, '.env')
-if os.path.isfile(dotenv_path):
+dotenv_path = Path(BASE_DIR, '.env')
+if dotenv_path.is_file():
     load_dotenv(dotenv_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-SECRET_KEY = 'c5n0c6tiz=v=@qh(gj5cjlsqws(u-l(zn7!l1e!v8e+p&hoh-o'
+SECRET_KEY =  os.getenv('DJANGO_KEY')
 
-DEBUG = True
+DEBUG = bool(os.getenv('DJANGO_DEBUG') == 'True')
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -145,28 +145,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-_STATIC_ROOT = Path(BASE_DIR, 'static')
-# if DEBUG:
-#     STATICFILES_DIRS = (_STATIC_ROOT, )
-# else:
-#     STATIC_ROOT = _STATIC_ROOT
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'assets'),
-]
+STATIC_ROOT = Path(BASE_DIR, 'static')
+if DEBUG:
+    STATICFILES_DIRS = (
+        Path(BASE_DIR, 'assets'),
+    )
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #Path(BASE_DIR, 'media')
-DOWNLOAD_ROOT = os.path.join(MEDIA_ROOT, 'download')
-LOGIN_URL = "users:login"#'/auth/login/'
-LOGIN_REDIRECT_URL = "recipes:index"
+MEDIA_ROOT = Path(BASE_DIR, 'media')
 
-# AUTH_USER_MODEL = 'users.CustomUser'
+LOGIN_URL = "users:login"
+LOGIN_REDIRECT_URL = "recipes:index"
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 # указываем директорию, в которую будут складываться файлы писем
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+EMAIL_FILE_PATH = Path(BASE_DIR, "sent_emails")
 
 REST_FRAMEWORK = {        
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
@@ -176,5 +169,6 @@ REST_FRAMEWORK = {
     ],
     # 'SEARCH_PARAM': 'query'
 }
+
 PAGINATION_PAGE_SIZE = 6
 PREVIEWS_COUNT = 3

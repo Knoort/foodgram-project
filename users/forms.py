@@ -2,6 +2,7 @@ from django.forms import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 
+#Паттерн страницы пользователя совпадает с этими путями
 RESTRICTED_USERNAMES = (
     'new',
     'favorites',

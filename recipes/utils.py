@@ -7,13 +7,9 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction, IntegrityError
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.utils.text import slugify
-# from django.utils import encoding
-# from django.template import defaultfilters -> slugify
-# import unidecode
 from unidecode import unidecode
 
 from .models import Ingredient, Recipe, RecipeIngredients
-from foodgram.settings import DOWNLOAD_ROOT
 
 
 def decode_slugify(txt):
@@ -44,10 +40,10 @@ def get_ingredients_from_post(post_req):
             num = key.split('_')[1]
 
             # Объединение одинаковых ингредиентов списка
+            # Имена в списке всегда уникльны
             curr_ing_name = post_req[f'nameIngredient_{num}']
             if curr_ing_name in ing_names:
-                # print('old: ', ingredients[ing_names[curr_ing_name]]['value'])
-                # print('add: ', post_req[f'valueIngredient_{num}'])
+                # Обращение к полю "количество", добавление к существующему
                 ingredients[ing_names[curr_ing_name]]['value'] = str(
                     Decimal(ingredients[ing_names[curr_ing_name]]['value'].replace(',', '.')) +
                     Decimal(str(post_req[f'valueIngredient_{num}']))
@@ -75,13 +71,11 @@ def save_recipe(request, form, recipe, ingredients):
     ri_objs = []
     for num, ing in ingredients.items():
         ingredient = get_object_or_404(Ingredient, name=ing['name'])
-        print(num, ' new: ', ing['value'])
         ri_objs.append(RecipeIngredients(
             recipe=recipe,
             ingredient=ingredient,
             amount=str(Decimal(ing['value'].replace(',', '.')))
         ))
-        print(num, ' new: ', ing['value'])
     RecipeIngredients.objects.bulk_create(ri_objs)
     form.save_m2m()
     return recipe
@@ -91,6 +85,7 @@ def prepare_and_save_recipe(request, form, recipe, ingredients):
     try:
         with transaction.atomic():
             if recipe:
+                # Если редактируем рецепт - всегда удаляем старые ингредиенты
                 recipe.recipeingredients.all().delete()
             return save_recipe(request, form, recipe, ingredients)
 
@@ -128,7 +123,6 @@ def products_list(recipes):
             }
     tpf = tempfile.NamedTemporaryFile(mode='w+')
     fl_path = os.path.join(tempfile.gettempdir(), tpf.name)
-    print(fl_path)
     tpf.write("Список продуктов для закупки:\n \n")
     for ing_name, ing in all_ings.items():
         tpf.write(f"{ing_name}: {ing['value']} {ing['units']}" + '\n')

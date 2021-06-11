@@ -31,14 +31,15 @@ class CreateDestroyViewset(
     viewsets.GenericViewSet
     ):
     def create(self, request, *args, **kwargs):
-        print('create_api')
         serializer = self.get_serializer(data=request.data)
-        print('initial', serializer.initial_data)
         serializer.is_valid(raise_exception=True)
-        print(serializer.validated_data.get('recipe'))
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
 
     def get_object(self, **kwargs):
         """
@@ -60,19 +61,17 @@ class CreateDestroyViewset(
         return obj
 
     def perform_create(self, serializer):
-        print(
-            'Create attempt', self.request.get_full_path(), self.request.user.is_authenticated
-        )
         if self.request.user.is_authenticated:
             if not hasattr(self, 'perform_create'):
                 raise ImproperlyConfigured(
                     "NotAuthorizedCreateModelMixin requires a definition of"
                     " 'perform_create()' method!"
                 )
-            print('authorised:', serializer.validated_data)
             serializer.save()
             return
-
+        # Создаем список покупок для неавторизованного юзера.
+        # purchases - список идентификаторов рецептов,
+        # сохраненный в сессии юзера.
         purchases = self.request.session.get('purchases')
         if not type(purchases) is list:
             purchases = []
@@ -81,14 +80,12 @@ class CreateDestroyViewset(
             self.request.session.update({
                 'purchases': purchases + [recipe_id]
             })
-        print(self.request.session.get('purchases'))
 
     def destroy(self, request, **kwargs):
         if request.user.is_authenticated:
             instance = self.get_object(user=request.user)
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
-        print({**kwargs})
         if not kwargs.get('recipe').isdigit():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         recipe = int(kwargs.get('recipe'))
@@ -100,7 +97,6 @@ class CreateDestroyViewset(
             return Response(status=status.HTTP_404_NOT_FOUND)
         purchases.remove(recipe)
         request.session['purchases'] = purchases
-        print(request.session.get('purchases'))
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

@@ -3,7 +3,6 @@ from foodgram.autoregister import autoregister
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-# from .models import CustomUser
 
 
 class UserAdmin(admin.ModelAdmin):

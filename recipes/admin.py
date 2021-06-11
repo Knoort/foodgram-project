@@ -4,9 +4,11 @@ from foodgram.autoregister import autoregister
 from .models import Recipe, RecipeTag, RecipeIngredients, Ingredient
 # Register your models here.
 
+
 class RecipeIngredientsInline(admin.TabularInline):
     model = Recipe.ingredients.through
     extra = 1
+
 
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientsInline, )
@@ -17,5 +19,6 @@ class RecipeAdmin(admin.ModelAdmin):
 
 class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name', )
+
 
 autoregister('recipes', )

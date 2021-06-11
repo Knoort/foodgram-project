@@ -16,7 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
+from django.conf.urls import handler404, handler500 #noqa
 from django.conf.urls.static import static
+
+handler404 = "recipes.views.page_not_found"   #noqa
+handler500 = "recipes.views.server_error"     #noqa
 
 urlpatterns = [
     #  регистрация и авторизация
