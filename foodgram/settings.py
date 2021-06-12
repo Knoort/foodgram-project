@@ -157,9 +157,17 @@ MEDIA_ROOT = Path(BASE_DIR, 'media')
 LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "recipes:index"
 
+#  Движок email. filebased - для тестирования, smtp - для отправки.
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 # указываем директорию, в которую будут складываться файлы писем
 EMAIL_FILE_PATH = Path(BASE_DIR, "sent_emails")
+
+DEFAULT_FROM_EMAIL = 'foodgram-noreply@gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'knoort1@gmail.com'
+EMAIL_HOST_PASSWORD = os.getenv('google_passwd') 
+EMAIL_USE_TLS = True
 
 REST_FRAMEWORK = {        
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',

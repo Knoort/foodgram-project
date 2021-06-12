@@ -1,6 +1,5 @@
 {% load recipe_filters %}
 <div class="card" data-id="{{recipe.id}}">
-    {% comment %} {{recipe.id}} {% endcomment %}
     {% csrf_token %}
     <a href="{% url 'recipes:recipe_view_redirect' recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe|field_verbose_name:"image" }}" class="card__image"></a>
 

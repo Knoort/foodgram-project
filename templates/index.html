@@ -23,7 +23,6 @@
 {% block content %}
 
     {% if page_data.name == 'author_profile' and user.is_authenticated and page_data.author.id != user.id %}
-    {% comment %} {{page_data.author.id}} {% endcomment %}
         <div class="author-subscribe" data-author="{{page_data.author.id}}">
             <p style="padding: 0 0 2em 0;">
                 {% include 'includes/follow_button.html' with following=page_data.following %}
