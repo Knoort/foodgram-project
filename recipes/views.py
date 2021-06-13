@@ -21,6 +21,7 @@ from .utils import (
     get_purchases,
     products_list
 )
+from .context_processors import tags
 
 User = get_user_model()
 TAGS = TagChoices.values
@@ -70,10 +71,8 @@ def server_error(request):
 
 def recipes_set(request, author_username=None, page_choice=None):
     page_data = PAGES_DATA[page_choice]
-    page_data['all_tags'] = RecipeTag.objects.all()
-    page_data['tags_checked'] = request.GET.getlist('tags', [])
 
-    tags_checked = page_data['tags_checked']
+    tags_checked = tags(request)['tags']['checked']
     recipes = Recipe.objects.filter(
         tags__name__in=(tags_checked if tags_checked else TAGS)
         ).select_related(
@@ -117,7 +116,6 @@ def recipes_set(request, author_username=None, page_choice=None):
     context = {
         'page_data': page_data,
         'recipes': recipes,
-        'purchases_count': purchases.count(),
         'page': page,
         'paginator': paginator
     }
@@ -125,16 +123,14 @@ def recipes_set(request, author_username=None, page_choice=None):
 
 
 def purchases(request, download=False):
-    page_data = PAGES_DATA[PURCHASES]
     purchases = get_purchases(request)
 
     if download:
         return products_list(purchases)
 
     context = {
-        'page_data': page_data,
+        'page_data': PAGES_DATA[PURCHASES],
         'recipes': purchases,
-        'purchases_count': purchases.count()
     }
     return render(request, 'shopList.html', context)
 
@@ -164,12 +160,10 @@ def recipe_view_slug(request, recipe_id, slug):
         following = False
         is_favorite = False
 
-    user_purchases = get_purchases(request)
-    in_purchases = recipe in user_purchases
+    in_purchases = recipe in get_purchases(request)
     context = {
         'recipe': recipe,
         'recipe_ings': recipe_ings,
-        'purchases_count': user_purchases.count(),
         'following': following,
         'is_favorite': is_favorite,
         'in_purchases': in_purchases
@@ -193,7 +187,6 @@ def subscriptions(request):
     context = {
         'page_data': page_data,
         'authors': authors,
-        'purchases_count': get_purchases(request).count(),
         'page': page,
         'paginator': paginator
     }
@@ -207,11 +200,7 @@ def delete_recipe(request, recipe_id=None, confirm=None):
         recipe.delete()
         return redirect('recipes:index')
 
-    context = {
-        'recipe': recipe,
-        'purchases_count': get_purchases(request).count(),
-    }
-    return render(request, 'deleteRecipeConfirm.html', context)
+    return render(request, 'deleteRecipeConfirm.html', {'recipe': recipe})
 
 
 @login_required
@@ -245,12 +234,9 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
         recipe = prepare_and_save_recipe(request, form, recipe, ingredients)
         return redirect('recipes:recipe_view_redirect', recipe_id=recipe.id)
 
-    all_tags = RecipeTag.objects.all()
     context = {
         'recipe': recipe,
         'form': form,
-        'all_tags': all_tags,
         'ingredients': ingredients,
-        'purchases_count': get_purchases(request).count(),
     }
     return render(request, 'formRecipe.html', context)

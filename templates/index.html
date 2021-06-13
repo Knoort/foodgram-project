@@ -14,8 +14,8 @@
 
 {% block main_header_content %}
     <ul class="tags">
-        {% for tag in page_data.all_tags %}
-            {% include 'includes/filterTags.html' with tags_checked=page_data.tags_checked %}
+        {% for tag in tags.all %}
+            {% include 'includes/filterTags.html' with tags_checked=tags.checked %}
         {% endfor %}
     </ul>
 {% endblock %}
@@ -37,7 +37,7 @@
     </div>
 
     {% if page.has_other_pages %}
-        {% include 'includes/paginator.html' with tags_checked=page_data.tags_checked %}
+        {% include 'includes/paginator.html' with tags_checked=tags.checked %}
     {% endif %}
 
 {% endblock %}

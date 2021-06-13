@@ -42,20 +42,24 @@ def get_ingredients_from_post(post_req):
             # Объединение одинаковых ингредиентов списка
             # Имена в списке всегда уникльны
             curr_ing_name = post_req[f'nameIngredient_{num}']
+            curr_ing_value = post_req[f'valueIngredient_{num}'].replace(',', '.')
+
             if curr_ing_name in ing_names:
                 # Обращение к полю "количество", добавление к существующему
                 ingredients[ing_names[curr_ing_name]]['value'] = str(
-                    Decimal(ingredients[ing_names[curr_ing_name]]['value'].replace(',', '.')) +
-                    Decimal(str(post_req[f'valueIngredient_{num}']))
+                    Decimal(ingredients[ing_names[curr_ing_name]]['value']) +
+                    Decimal(curr_ing_value)
                 )
                 continue
+
             # Новый ингредиент в списке
             ingredients[num] = {
                 'name': curr_ing_name,
-                'value': post_req[f'valueIngredient_{num}'],
+                'value': curr_ing_value,
                 'units': post_req[f'unitsIngredient_{num}'],
             }
             ing_names.update({curr_ing_name: num})
+
     return ingredients
 
 

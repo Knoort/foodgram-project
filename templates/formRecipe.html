@@ -34,12 +34,8 @@
             <div class="form__group">
                 <p class="form__label">Теги</p>
                 <div class="form__field-group">
-                    {% for tag in form.tags.field.choices.queryset %}
-                        {{ tag.name }} {{ tag.pk }}
-                        <br>
-                    {% endfor %}
                     <div class="tags">
-                        {% for tag in all_tags %}
+                        {% for tag in tags.all %}
                         <div class="tags__item">
                             <input
                                 type="checkbox"
@@ -54,7 +50,6 @@
                         {% endfor %}
                     </div>
                     <span class="form__error">{{ form.tags.errors }}</span>
-                    {{form.tags.value }}<br>
                 </div>
             </div>
 
