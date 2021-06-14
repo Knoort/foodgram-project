@@ -16,7 +16,10 @@ def decode_slugify(txt):
     return slugify(unidecode(txt))
 
 
-def get_ingredients_from_qs(recipe_ings):
+def get_ingredients_from_qs(recipe_ings)->dict:
+    """
+    Возвращает словарь ингредиентов, количество в формате Decimal
+    """
     ingredients = {}
     num = 0
     for recipe_ing in recipe_ings:
@@ -29,7 +32,13 @@ def get_ingredients_from_qs(recipe_ings):
     return ingredients
 
 
-def get_ingredients_from_post(post_req):
+def get_ingredients_from_post(post_req)->dict:
+    """
+    Возвращает словарь ингредиентов вида:
+    {   '0': {'name': ing0_name, 'value': decimal_obj, 'units': ing0_units},
+        '1': {'name': ing1_name, 'value': decimal_obj, 'units': ing1_units},
+        ... }
+    """
     ingredients = {}
     ing_names = {}
     if not post_req:
@@ -42,14 +51,10 @@ def get_ingredients_from_post(post_req):
             # Объединение одинаковых ингредиентов списка
             # Имена в списке всегда уникльны
             curr_ing_name = post_req[f'nameIngredient_{num}']
-            curr_ing_value = post_req[f'valueIngredient_{num}'].replace(',', '.')
-
+            curr_ing_value = Decimal(post_req[f'valueIngredient_{num}'].replace(',', '.'))
             if curr_ing_name in ing_names:
                 # Обращение к полю "количество", добавление к существующему
-                ingredients[ing_names[curr_ing_name]]['value'] = str(
-                    Decimal(ingredients[ing_names[curr_ing_name]]['value']) +
-                    Decimal(curr_ing_value)
-                )
+                ingredients[ing_names[curr_ing_name]]['value'] += curr_ing_value
                 continue
 
             # Новый ингредиент в списке
@@ -78,7 +83,7 @@ def save_recipe(request, form, recipe, ingredients):
         ri_objs.append(RecipeIngredients(
             recipe=recipe,
             ingredient=ingredient,
-            amount=str(Decimal(ing['value'].replace(',', '.')))
+            amount=ing['value']
         ))
     RecipeIngredients.objects.bulk_create(ri_objs)
     form.save_m2m()

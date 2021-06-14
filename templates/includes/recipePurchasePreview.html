@@ -5,6 +5,5 @@
         <a class="recipe__title link" href="{% url 'recipes:recipe_view_redirect' recipe.id %}">{{ recipe.name }}</a>
         <p class="recipe__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
     </div>
-    {% comment %} {% include 'includes/purchase_button.html' %} {% endcomment %}
     <a href="#" class="shopping-list__button link">Удалить</a>
 </li>
