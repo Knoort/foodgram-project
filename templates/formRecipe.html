@@ -43,7 +43,7 @@
                                 id="id_{{ tag.name }}"
                                 class="tags__checkbox tags__checkbox_style_{{ tag.color }}"
                                 value="{{ tag.pk }}"
-                                {% if tag.id in form.tags.value|int_format %}checked{% endif %}
+                                {% if tag.pk in form.tags.value|int_format %}checked{% endif %}
                             >
                             <label for="id_{{ tag.name }}" class="tags__label">{{ tag.display_name }}</label>
                         </div>
