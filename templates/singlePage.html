@@ -42,7 +42,7 @@
                             </a>
                         </p>
                     </li>
-                    {% if recipe.author.username == request.user.username %}
+                    {% if recipe.author == request.user or request.user.is_superuser %}
                         <li class="single-card__item">
                             <a
                                 style="margin-left: 2.5em"

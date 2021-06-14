@@ -135,9 +135,15 @@ class RecipeIngredients(models.Model):
     amount = models.DecimalField( max_digits=6, decimal_places=1)
 
     class Meta:
-        unique_together = 'recipe', 'ingredient'
         verbose_name = 'Ингредиент рецепта',
         verbose_name_plural = 'Ингредиенты рецепта'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredient'],
+                name='IngredientsUniqueInRecipe'
+            )
+        ]
+        
 
 
 class Favorites(models.Model):
@@ -155,9 +161,14 @@ class Favorites(models.Model):
     )
     
     class Meta:
-        unique_together = 'user', 'recipe'
         verbose_name = 'Избранный рецепт',
         verbose_name_plural = 'Избранные'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='UniqueFavorite'
+            )
+        ]
 
 
 class Subscriptions(models.Model):
@@ -175,10 +186,13 @@ class Subscriptions(models.Model):
     )
     
     class Meta:
-        unique_together = 'user', 'author'
         verbose_name = 'Подписка',
         verbose_name_plural = 'Подписки'
         constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='UniqueFollow'
+            ),
             models.CheckConstraint(
                 check=~Q(user=F('author')),
                 name='NotSubscriptItself'
@@ -201,6 +215,12 @@ class Purchases(models.Model):
     )
     
     class Meta:
-        unique_together = 'user', 'recipe'
         verbose_name = 'Закупка',
         verbose_name_plural = 'Закупки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='UniquePurchaseForUser'
+            ),
+        ]
+        
