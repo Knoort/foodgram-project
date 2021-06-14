@@ -27,7 +27,7 @@
                 <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
                 <div class="form__field-group">
                     {{ field|addclass:"form__input" }}
-                    {% if field.errors %}<span class="form__error">{{field.errors}}</span>{% endif %}
+                    {% if field.errors %}<span class="form__error">{{ field.errors }}</span>{% endif %}
                 </div>
                 <div class="form__field-group">
                     {% if field.help_text %}

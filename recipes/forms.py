@@ -1,5 +1,5 @@
 from django import forms
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from .models import Recipe, RecipeIngredients, RecipeTag
 from .utils import get_ingredients_from_post
@@ -20,13 +20,33 @@ class RecipeForm(forms.ModelForm):
             raise forms.ValidationError('Укажите теги!')
         return tags
 
+    def clean_cooking_time(self):
+        time = self.cleaned_data['cooking_time']
+        if not str(time).isdigit():
+            raise forms.ValidationError('Неправильное время приготовления!')
+        if not int(time) > 0:
+            raise forms.ValidationError(
+                'Время приготовления должно быть положительным!'
+            )
+        return time
+
     def clean(self):
         ingredients = get_ingredients_from_post(self.data)
         if not ingredients:
             raise forms.ValidationError('Укажите ингредиенты!')
         for ing in ingredients.values():
-            if Decimal(ing['value']) <= 0:
+            try:
+                ing_amount = Decimal(ing['value'])
+            except InvalidOperation:
                 raise forms.ValidationError(
-                    'Количество ингредиента должно быть положительным!'
+                    f"Неверный формат количества ингредиента {ing['name']}!"
+                )
+            except Exception:
+                raise forms.ValidationError(
+                    f"Что-то не так с количеством ингредиента {ing['name']}.."
+                )
+            if ing_amount <= Decimal('0.0'):
+                raise forms.ValidationError(
+                    f"{ing['name']} - количество ингредиента должно быть положительным!"
                 )
         return self.cleaned_data

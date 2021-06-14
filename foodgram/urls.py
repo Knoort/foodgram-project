@@ -19,12 +19,12 @@ from django.conf import settings
 from django.conf.urls import handler404, handler500 #noqa
 from django.conf.urls.static import static
 
-handler404 = "recipes.views.page_not_found"   #noqa
-handler500 = "recipes.views.server_error"     #noqa
+handler404 = 'recipes.views.page_not_found'   #noqa
+handler500 = 'recipes.views.server_error'     #noqa
 
 urlpatterns = [
     #  регистрация и авторизация
-    path("auth/", include("users.urls", namespace='users')),
+    path('auth/', include('users.urls', namespace='users')),
     path('about/', include('about.urls', namespace='about')),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls'), name='api'),

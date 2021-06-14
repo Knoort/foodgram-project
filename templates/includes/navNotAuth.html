@@ -7,7 +7,7 @@
             </li>
             <li class="nav__item nav__item_disabled">
                 <a href="{% url 'recipes:purchases' %}" class="nav__link link">Список покупок</a>
-                <span class="badge badge_style_blue nav__badge" id="counter">{{purchases_count}}</span>
+                <span class="badge badge_style_blue nav__badge" id="counter">{% if purchases_count %}{{ purchases_count }}{% endif %}</span>
             </li>
         </ul>
         <ul class="nav__items list">

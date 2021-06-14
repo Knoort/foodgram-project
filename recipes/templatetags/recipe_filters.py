@@ -8,9 +8,9 @@ register = template.Library()
 
 
 def to_int_format(item):
-    if type(item) == int:
+    if isinstance(item, int):
         return item
-    if type(item) == str and item.isdigit():
+    if isinstance(item, str) and item.isdigit():
         return int(item)
     return item
 
@@ -58,13 +58,13 @@ def int_format(obj):
     """
     Приводит текстовые цифры и списки цифр к числам.
     """
-    if type(obj) in (str, int):
+    if isinstance(obj, str) or isinstance(obj, int):
         return to_int_format(obj)
 
-    if type(obj) == list:
+    if isinstance(obj, list):
         cp_obj = []
         for item in obj:
-            if type(item) not in (str, int):
+            if (not isinstance(item, str)) and (not isinstance(item, int)):
                 return obj
             cp_obj.append(to_int_format(item))
         return cp_obj
@@ -89,10 +89,3 @@ def cyr_pluralize(obj, num):
     if dig[-1] in ['2', '3', '4']:
         return 'а'
     return 'ов'
-
-
-@register.filter
-def is_in(obj, inp_set):
-    if obj in inp_set:
-        return True
-    return False

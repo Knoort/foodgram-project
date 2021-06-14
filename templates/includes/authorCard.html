@@ -20,7 +20,7 @@
                         href="{% url 'recipes:author_profile' author.username %}"
                         class="card-user__link link"
                     >
-                        Еще {{ author.recipes.count|sub:cnt}} рецепт{{author.recipes.count|cyr_pluralize:cnt}}...
+                        Еще {{ author.recipes.count|sub:cnt }} рецепт{{ author.recipes.count|cyr_pluralize:cnt }}...
                     </a>
                 </li>
             {% endif %}

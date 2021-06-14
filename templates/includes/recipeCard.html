@@ -7,11 +7,11 @@
         <a class="card__title link" href="{% url 'recipes:recipe_view_redirect' recipe.id %}" target="_blank">{{ recipe.name }}</a>
         <ul class="card__items">
             {% for tag in recipe.tags.values %}
-                <li class="card__item"><span class="badge badge_style_{{tag.color}}">{{tag.display_name}}</span></li>
+                <li class="card__item"><span class="badge badge_style_{{ tag.color }}">{{ tag.display_name }}</span></li>
             {% endfor %}
         </ul>
         <div class="card__items card__items_column">
-            <p class="card__text"><span class="icon-time"></span> {{recipe.cooking_time}} мин.</p>
+            <p class="card__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
             <p class="card__text"><span class="icon-user"></span>
                 <a href="{% url 'recipes:author_profile' recipe.author.username %}" style="color: black">
                     {{ recipe.author.get_full_name|default:recipe.author.username }}

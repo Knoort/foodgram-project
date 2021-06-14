@@ -23,15 +23,15 @@ if dotenv_path.is_file():
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-SECRET_KEY =  os.getenv('DJANGO_KEY')
+SECRET_KEY = os.getenv('DJANGO_KEY')
 
 DEBUG = bool(os.getenv('DJANGO_DEBUG') == 'True')
 
 ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "[::1]",
-    "testserver",    
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'testserver',    
 ]
 
 INTERNAL_IPS = [

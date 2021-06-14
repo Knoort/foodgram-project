@@ -116,10 +116,10 @@
                 <label for="{{ form.image.id_for_label }}" class="form__label">{{ form.image.label }}</label>
                 <div class="form__field-group">
                     {% if recipe %}
-                        {{form.image}}
+                        {{ form.image }}
                     {% else %}
-                        {{form.image.name}}
-                        {{form.image.value}}
+                        {{ form.image.name }}
+                        {{ form.image.value }}
                         <input
                             type="file"
                             name="{{ form.image.name }}"
