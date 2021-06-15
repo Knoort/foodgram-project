@@ -35,18 +35,19 @@ class RecipeForm(forms.ModelForm):
         if not ingredients:
             raise forms.ValidationError('Укажите ингредиенты!')
         for ing in ingredients.values():
+            ing_name = ing['name']
             try:
                 ing_amount = Decimal(ing['value'])
             except InvalidOperation:
                 raise forms.ValidationError(
-                    f"Неверный формат количества ингредиента {ing['name']}!"
+                    f'Неверный формат количества ингредиента {ing_name}!'
                 )
             except Exception:
                 raise forms.ValidationError(
-                    f"Что-то не так с количеством ингредиента {ing['name']}.."
+                    f'Что-то не так с количеством ингредиента {ing_name}..'
                 )
             if ing_amount <= Decimal('0.0'):
                 raise forms.ValidationError(
-                    f"{ing['name']} - количество ингредиента должно быть положительным!"
+                    f'{ing_name} - количество ингредиента должно быть положительным!'
                 )
         return self.cleaned_data
