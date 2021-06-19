@@ -1,11 +1,14 @@
 asgiref==3.3.1
 astroid==2.5.6
+certifi                 #added
+chardet                 #added 
 colorama==0.4.4
 Django==3.1.5
 django-filter==2.4.0
 djangorestframework==3.12.4
 lazy-object-proxy==1.6.0
 mccabe==0.6.1
+wheel                       # added packs
 Pillow==8.1.0
 python-slugify==4.0.1
 pytz==2020.5
@@ -16,10 +19,12 @@ Unidecode==1.2.0
 wrapt==1.12.1
 
 # added packs
-wheel
+
 psycopg2
 python-dotenv
 gunicorn
+sqlparse
+
 
 # not need in prod
 # django-debug-toolbar==3.2.1
