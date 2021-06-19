@@ -55,13 +55,11 @@ PAGES_DATA = {
     }
 }
 
+
 def page_not_found(request, exception):
     # Переменную exception не выводим
     return render(
-        request, 
-        "misc/t404.html", 
-        {"path": request.path}, 
-        status=404
+        request, 'misc/t404.html', {'path': request.path}, status=404
     )
 
 

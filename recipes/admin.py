@@ -5,7 +5,6 @@ from django.utils.http import urlencode
 from django.utils.html import format_html
 
 from .models import Recipe, RecipeTag, RecipeIngredients, Ingredient, Favorites
-# Register your models here.
 
 
 class RecipeIngredientsInline(admin.TabularInline):
