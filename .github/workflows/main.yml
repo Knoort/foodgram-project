@@ -54,7 +54,7 @@ jobs:
 
   deploy_and_up:
     name: Deploy proect to server and run
-    needs: build_and_push_to_docker_hub
+    # needs: build_and_push_to_docker_hub
     env:
       DJANGO_DEBUG: 'False'
       DB_ENGINE:    'django.db.backends.postgresql'
