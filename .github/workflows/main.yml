@@ -61,6 +61,8 @@ jobs:
       DB_NAME:      'postgres'
       DB_HOST:      'db'
       DB_PORT:      5432
+      SRV_HOST:     178.154.245.213
+      SRV_PORT:     22
 
     runs-on: ubuntu-latest
     steps:
@@ -69,11 +71,11 @@ jobs:
     - name: copy start files via ssh password
       uses: appleboy/scp-action@master
       with:
-        host: 178.154.245.213
+        host: ${{ env.SRV_HOST }}
         username: ${{ secrets.SRV_USERNAME }}
         key: ${{ secrets.SRV_RSA_KEY }}
         passphrase: ${{ secrets.SRV_PASSWORD }}
-        port: 22
+        port: ${{ env.SRV_PORT }}
         source: >
           docker-compose.yaml, nginx/default.conf,
           entrypoint.sh
@@ -84,7 +86,8 @@ jobs:
       with:
         host: ${{ env.SRV_HOST }}
         username: ${{ secrets.SRV_USERNAME }}
-        password: ${{ secrets.SRV_PASSWORD }}
+        key: ${{ secrets.SRV_RSA_KEY }}
+        passphrase: ${{ secrets.SRV_PASSWORD }}
         port: ${{ env.SRV_PORT }}
         script: |
           cd ~/dev/foodgram-project/
@@ -105,7 +108,8 @@ jobs:
       with:
         host: ${{ env.SRV_HOST }}
         username: ${{ secrets.SRV_USERNAME }}
-        password: ${{ secrets.SRV_PASSWORD }}
+        key: ${{ secrets.SRV_RSA_KEY }}
+        passphrase: ${{ secrets.SRV_PASSWORD }}
         port: ${{ env.SRV_PORT }}
         script: |
           cd ~/dev/foodgram-project/
