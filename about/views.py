@@ -1,7 +1,7 @@
-from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
 from .texts import ABOUT_AUTHOR, ABOUT_TECH
+
 
 class AboutView(TemplateView):
     page = None

@@ -1,7 +1,7 @@
 from urllib.parse import urlencode
 from django import template
 
-from recipes.models import RecipeTag, TagChoices
+from recipes.models import TagChoices
 
 # В template.Library зарегистрированы все теги и фильтры шаблонов
 register = template.Library()
