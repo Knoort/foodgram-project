@@ -71,8 +71,8 @@ jobs:
       with:
         host: 178.154.245.213
         username: ${{ secrets.SRV_USERNAME }}
-        password: ${{ secrets.SRV_PASSWORD }}
         key: ${{ secrets.SRV_RSA_KEY }}
+        passphrase: ${{ secrets.SRV_PASSWORD }}
         port: 22
         source: >
           docker-compose.yaml, nginx/default.conf,
