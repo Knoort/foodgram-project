@@ -99,8 +99,8 @@ jobs:
           echo 'DB_NAME=${{ env.DB_NAME }}' >> .env
           echo 'DB_HOST=${{ env.DB_HOST }}' >> .env
           echo 'DB_PORT=${{ env.DB_PORT }}' >> .env
-          echo 'DB_USER=${{ secrets.DB_USER }}' >> .env
-          echo 'DB_PASSWORD=${{ secrets.DB_PASSWORD }}' >> .env
+          echo 'POSTGRES_USER=${{ secrets.DB_USER }}' >> .env
+          echo 'POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}' >> .env
           echo 'GOOGLE_PASSWD=${{ secrets.GOOGLE_PASSWD }}' >> .env
 
     - name: executing remote ssh commands to deploy
