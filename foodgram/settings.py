@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
+        # 'NAME': BASE_DIR / 'db_from_postgres.sqlite3',
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('POSTGRES_USER'),
@@ -127,10 +127,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = Path(BASE_DIR, 'static')
-if DEBUG:
-    STATICFILES_DIRS = (
-        Path(BASE_DIR, 'assets'),
-    )
+# if DEBUG:
+STATICFILES_DIRS = (
+    Path(BASE_DIR, 'assets'),
+)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(BASE_DIR, 'media')
