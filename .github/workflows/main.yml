@@ -77,9 +77,8 @@ jobs:
         passphrase: ${{ secrets.SRV_PASSWORD }}
         port: ${{ env.SRV_PORT }}
         source: >
-          docker-compose.yaml, nginx/default.conf,
-          entrypoint.sh
-        target: "/home/knoort/dev/foodgram-project/"
+          "docker-compose.yaml,entrypoint.sh, nginx/default.conf"
+        target: "~/dev/foodgram-project/"
 
     - name: make env file
       uses: appleboy/ssh-action@master
@@ -103,7 +102,7 @@ jobs:
           echo 'POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}' >> .env
           echo 'GOOGLE_PASSWD=${{ secrets.GOOGLE_PASSWD }}' >> .env
 
-    - name: executing remote ssh commands to deploy
+    - name: executing remote ssh commands to deplcd ..oy
       uses: appleboy/ssh-action@master
       with:
         host: ${{ env.SRV_HOST }}
