@@ -8,11 +8,7 @@ django-filter==2.4.0
 djangorestframework==3.12.4
 lazy-object-proxy==1.6.0
 mccabe==0.6.1
-<<<<<<< HEAD
-wheel                       # added packs
-=======
 wheel                   # added packs
->>>>>>> 7a75e83945aa5f0ddc7294c1e6e8a23a3876c21c
 Pillow==8.1.0
 python-slugify==4.0.1
 pytz==2020.5
