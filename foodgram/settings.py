@@ -8,6 +8,10 @@ dotenv_path = Path(BASE_DIR, '.env')
 if dotenv_path.is_file():
     load_dotenv(dotenv_path)
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "foorgram.settings")
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
+
 SECRET_KEY = os.getenv('DJANGO_KEY')
 
 DEBUG = bool(os.getenv('DJANGO_DEBUG') == 'True')
@@ -18,10 +22,6 @@ ALLOWED_HOSTS = [
     '[::1]',
     'testserver',    
 ]
-
-INTERNAL_IPS = [
-    "127.0.0.1",
-] 
 
 INSTALLED_APPS = [
     'users',
@@ -34,11 +34,13 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
-    'debug_toolbar',
     'api',
     'about',
     'recipes',
 ]
+
+if DEBUG == True:
+    INSTALLED_APPS += ['debug_toolbar']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,8 +50,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+] 
+
+if DEBUG == True:
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 ROOT_URLCONF = 'foodgram.urls'
 
