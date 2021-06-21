@@ -1,12 +1,13 @@
 from .models import RecipeTag
 from .utils import get_purchases
 
+
 def tags(request):
     tags = {
         'all': RecipeTag.objects.all(),
         'checked': request.GET.getlist('tags', [])
     }
-    return {'tags': tags }
+    return {'tags': tags}
 
 
 def purchases_count(request):

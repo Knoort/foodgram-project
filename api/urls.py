@@ -13,7 +13,9 @@ from .views import (
 router = DefaultRouter()
 router.register('ingredients', IngredientViewSet, basename='ingredients')
 router.register('favorites', FavoritesViewSet, basename='favorites')
-router.register('subscriptions', SubscriptionsVievSet, basename='subscriptions')
+router.register(
+    'subscriptions', SubscriptionsVievSet, basename='subscriptions'
+)
 router.register('purchases', PurchasesViewSet, basename='purchases')
 
 

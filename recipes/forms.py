@@ -1,7 +1,7 @@
 from django import forms
 from decimal import Decimal, InvalidOperation
 
-from .models import Recipe, RecipeIngredients, RecipeTag
+from .models import Recipe
 from .utils import get_ingredients_from_post
 
 
@@ -48,6 +48,7 @@ class RecipeForm(forms.ModelForm):
                 )
             if ing_amount <= Decimal('0.0'):
                 raise forms.ValidationError(
-                    f'{ing_name} - количество ингредиента должно быть положительным!'
+                    f'{ing_name} - количество ингредиента' +
+                    ' должно быть положительным!'
                 )
         return self.cleaned_data

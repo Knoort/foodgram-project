@@ -9,10 +9,7 @@ from foodgram.settings import PAGINATION_PAGE_SIZE, PREVIEWS_COUNT
 from .forms import RecipeForm
 from .models import (
     TagChoices,
-    Recipe,
-    Ingredient,
-    RecipeIngredients,
-    RecipeTag
+    Recipe
 )
 from .utils import (
     get_ingredients_from_post,
@@ -84,7 +81,7 @@ def recipes_set(request, author_username=None, page_choice=None):
         recipes = recipes.annotate(
             in_favorites=Exists(favorites.filter(pk__exact=OuterRef('pk')))
         )
-    
+
     purchases = get_purchases(request)
     recipes = recipes.annotate(
         in_purchases=Exists(purchases.filter(pk__exact=OuterRef('pk')))
@@ -102,7 +99,7 @@ def recipes_set(request, author_username=None, page_choice=None):
             page_data['following'] = False
 
     elif page_choice == FAVORITES:
-        if request.user.is_authenticated :
+        if request.user.is_authenticated:
             recipes = recipes.filter(pk__in=favorites.values('pk'))
         else:
             return redirect('recipes:index')
@@ -222,7 +219,7 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
         instance=recipe
     )
     # Редактирование рецепта - 1 открытие формы.
-    if recipe and not request.POST :
+    if recipe and not request.POST:
         ingredients = get_ingredients_from_qs(recipe.recipeingredients.all())
     # Создание рецепта или повторная отправка формы.
     else:

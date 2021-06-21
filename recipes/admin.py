@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.html import format_html
 
-from .models import Recipe, RecipeTag, RecipeIngredients, Ingredient, Favorites
+from .models import Recipe, Favorites
 
 
 class RecipeIngredientsInline(admin.TabularInline):
@@ -24,7 +24,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def fav_cnt(self, obj):
         return obj.admirers.all().count()
-    
+
     fav_cnt.short_description = 'Избран'
 
 

@@ -20,7 +20,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '[::1]',
-    'testserver',    
+    'testserver',
 ]
 
 INSTALLED_APPS = [
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'recipes',
 ]
 
-if DEBUG == True:
+if DEBUG is True:
     INSTALLED_APPS += ['debug_toolbar']
 
 MIDDLEWARE = [
@@ -52,12 +52,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if DEBUG is True:
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+
 INTERNAL_IPS = [
     "127.0.0.1",
-] 
-
-if DEBUG == True:
-    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+]
 
 ROOT_URLCONF = 'foodgram.urls'
 
@@ -104,16 +104,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -155,11 +159,12 @@ DEFAULT_FROM_EMAIL = 'foodgram-noreply@gmail.com'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'knoort1@gmail.com'
-EMAIL_HOST_PASSWORD = os.getenv('GOOGLE_PASSWD') 
+EMAIL_HOST_PASSWORD = os.getenv('GOOGLE_PASSWD')
 EMAIL_USE_TLS = True
 
-REST_FRAMEWORK = {        
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 5,
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',

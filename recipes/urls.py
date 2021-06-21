@@ -1,6 +1,5 @@
 from django.urls import include, path
 
-from foodgram.settings import MEDIA_ROOT
 from .views import (
     new_edit_recipe,
     delete_recipe,

@@ -20,11 +20,12 @@ class Ingredient(models.Model):
         blank=False,
         verbose_name='Ед. изм.'
     )
+
     class Meta:
         ordering = ('name', )
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-    
+
     def __str__(self):
         return f'{self.name}, {self.units}'
 
@@ -63,10 +64,10 @@ class RecipeTag(models.Model):
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
-    
+
     def __str__(self):
         return f'{self._meta.verbose_name} {self.display_name}'
-    
+
 
 class Recipe(models.Model):
     name = models.CharField(
@@ -132,7 +133,7 @@ class RecipeIngredients(models.Model):
         related_name='recipeingredients',
         null=True
     )
-    amount = models.DecimalField( max_digits=6, decimal_places=1)
+    amount = models.DecimalField(max_digits=6, decimal_places=1)
 
     class Meta:
         verbose_name = 'Ингредиент рецепта',
@@ -143,7 +144,6 @@ class RecipeIngredients(models.Model):
                 name='IngredientsUniqueInRecipe'
             )
         ]
-        
 
 
 class Favorites(models.Model):
@@ -159,7 +159,7 @@ class Favorites(models.Model):
         related_name='admirers',
         verbose_name='Избранный рецепт'
     )
-    
+
     class Meta:
         verbose_name = 'Избранный рецепт',
         verbose_name_plural = 'Избранные'
@@ -184,7 +184,7 @@ class Subscriptions(models.Model):
         related_name='follower',
         verbose_name='Автор'
     )
-    
+
     class Meta:
         verbose_name = 'Подписка',
         verbose_name_plural = 'Подписки'
@@ -213,7 +213,7 @@ class Purchases(models.Model):
         related_name='purchasers',
         verbose_name='рецепт заказа'
     )
-    
+
     class Meta:
         verbose_name = 'Закупка',
         verbose_name_plural = 'Закупки'
@@ -223,4 +223,3 @@ class Purchases(models.Model):
                 name='UniquePurchaseForUser'
             ),
         ]
-        

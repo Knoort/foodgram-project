@@ -18,7 +18,7 @@ from .serializers import (
 class IngredientViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
-    ):
+):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = [SearchFilter, OrderingFilter, DjangoFilterBackend]
@@ -29,7 +29,7 @@ class CreateDestroyViewset(
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
-    ):
+):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -117,7 +117,7 @@ class SubscriptionsVievSet(CreateDestroyViewset):
 class PurchasesViewSet(
     mixins.ListModelMixin,
     CreateDestroyViewset
-    ):
+):
     queryset = Purchases.objects.all()
     serializer_class = PurchasesSerializer
     lookup_field = 'recipe'

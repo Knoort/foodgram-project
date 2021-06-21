@@ -41,7 +41,7 @@ urlpatterns = [
         ),
         name='password_reset_confirm'
     ),
-    #  если нужного шаблона для /auth не нашлось в файле users.urls — 
+    #  если нужного шаблона для /auth не нашлось в файле users.urls —
     #  ищем совпадения в файле django.contrib.auth.urls
     path("", include("django.contrib.auth.urls")),
-] 
+]

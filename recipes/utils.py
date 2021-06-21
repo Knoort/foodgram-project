@@ -1,7 +1,8 @@
-import os, mimetypes, tempfile
+import os
+import mimetypes
+import tempfile
 
 from decimal import Decimal
-from pathlib import Path
 
 from django.shortcuts import get_object_or_404
 from django.db import transaction, IntegrityError
@@ -16,7 +17,7 @@ def decode_slugify(txt):
     return slugify(unidecode(txt))
 
 
-def get_ingredients_from_qs(recipe_ings)->dict:
+def get_ingredients_from_qs(recipe_ings) -> dict:
     """
     Возвращает словарь ингредиентов, количество в формате Decimal
     """
@@ -32,7 +33,7 @@ def get_ingredients_from_qs(recipe_ings)->dict:
     return ingredients
 
 
-def get_ingredients_from_post(post_req)->dict:
+def get_ingredients_from_post(post_req) -> dict:
     """
     Возвращает словарь ингредиентов вида:
     {   '0': {'name': ing0_name, 'value': decimal_obj, 'units': ing0_units},
@@ -51,10 +52,14 @@ def get_ingredients_from_post(post_req)->dict:
             # Объединение одинаковых ингредиентов списка
             # Имена в списке всегда уникльны
             curr_ing_name = post_req[f'nameIngredient_{num}']
-            curr_ing_value = Decimal(post_req[f'valueIngredient_{num}'].replace(',', '.'))
+            curr_ing_value = Decimal(
+                post_req[f'valueIngredient_{num}'].replace(',', '.')
+            )
             if curr_ing_name in ing_names:
                 # Обращение к полю "количество", добавление к существующему
-                ingredients[ing_names[curr_ing_name]]['value'] += curr_ing_value
+                ingredients[
+                    ing_names[curr_ing_name]
+                ]['value'] += curr_ing_value
                 continue
 
             # Новый ингредиент в списке

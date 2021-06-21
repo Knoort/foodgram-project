@@ -41,7 +41,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
                 'You cannot follow Yourself!'
             )
         return attrs
-        
+
 
 class PurchasesSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
