@@ -4,8 +4,8 @@ foodgram-project
 # GitHub Actions Result
 
 Status of Last Deployment: <br>:
-<img src="https://github.com/Knoort/workflows/foodgram-workflow/badge.svg?branch=master"><br>
 [![Actions Status](https://github.com/Knoort/foodgram-project/workflows/foodgram-workflow/badge.svg)](https://github.com/Knoort/foodgram-project/actions)
+<br>
 Работающее приложение:
 http://foodmanager.cf/recipes/
 
