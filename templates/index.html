@@ -15,7 +15,7 @@
 {% block main_header_content %}
     <ul class="tags">
         {% for tag in tags.all %}
-            {% include 'includes/filterTags.html' with tags_checked=tags.checked %}
+            {% include 'includes/filterTags.html' %}
         {% endfor %}
     </ul>
 {% endblock %}
@@ -37,7 +37,7 @@
     </div>
 
     {% if page.has_other_pages %}
-        {% include 'includes/paginator.html' with tags_checked=tags.checked %}
+        {% include 'includes/paginator.html' %}
     {% endif %}
 
 {% endblock %}

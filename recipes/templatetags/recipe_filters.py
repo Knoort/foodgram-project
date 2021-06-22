@@ -1,7 +1,5 @@
-from urllib.parse import urlencode
 from django import template
 
-from recipes.models import TagChoices
 
 # В template.Library зарегистрированы все теги и фильтры шаблонов
 register = template.Library()
@@ -33,19 +31,6 @@ def obj_verbose_name(obj):
 @register.filter
 def obj_verbose_name_plural(obj):
     return obj._meta.verbose_name_plural
-
-
-@register.filter
-def change_tag(obj, tag):
-    all_tag_names = [name[0] for name in TagChoices.choices]
-    curr_tags = obj.copy()
-
-    if tag in curr_tags:
-        curr_tags.remove(tag)
-    elif tag in all_tag_names:
-        curr_tags.append(tag)
-    params = urlencode({'tags': curr_tags}, doseq=True)
-    return params
 
 
 @register.filter

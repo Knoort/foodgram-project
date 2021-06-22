@@ -3,8 +3,8 @@
         <a
             id="{{ tag.name }}"
             class="tags__checkbox tags__checkbox_style_{{ tag.color }}
-            tags__checkbox{% if tag.name in tags_checked %}_active{% endif %}"
-            href="?{{ tags_checked|change_tag:tag.name }}"
+            tags__checkbox{% if tag.checked %}_active{% endif %}"
+            href="?{{ tag.link }}"
         ></a>
         <span class="tags__label">{{ tag.display_name }}</span>
     </li>
