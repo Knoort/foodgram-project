@@ -84,6 +84,7 @@ jobs:
         source: >
           "docker-compose.yaml,entrypoint.sh, nginx/default.conf"
         target: "~/dev/foodgram-project/"
+        overwrite: true
 
     - name: make env file
       uses: appleboy/ssh-action@master
