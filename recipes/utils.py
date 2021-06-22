@@ -1,6 +1,4 @@
-import os
-import mimetypes
-import tempfile
+import os, mimetypes, tempfile
 
 from decimal import Decimal
 

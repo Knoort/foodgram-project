@@ -14,7 +14,7 @@ class Ingredient(models.Model):
         blank=False,
         unique=True,
         verbose_name='Название'
-        )
+    )
     units = models.CharField(
         max_length=20,
         blank=False,
@@ -74,7 +74,7 @@ class Recipe(models.Model):
         max_length=100,
         blank=False,
         verbose_name='Название рецепта'
-        )
+    )
     image = models.ImageField('Изображение', upload_to='recipes/')
     author = models.ForeignKey(
         User,

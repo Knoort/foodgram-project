@@ -70,11 +70,11 @@ def recipes_set(request, author_username=None, page_choice=None):
     tags_checked = tags(request)['tags']['checked']
     recipes = Recipe.objects.filter(
         tags__name__in=(tags_checked if tags_checked else TAGS)
-        ).select_related(
-            'author'
-        ).prefetch_related(
-            'admirers'
-        ).distinct()
+    ).select_related(
+        'author'
+    ).prefetch_related(
+        'admirers'
+    ).distinct()
 
     if request.user.is_authenticated:
         favorites = recipes.filter(admirers__user=request.user)
@@ -94,7 +94,7 @@ def recipes_set(request, author_username=None, page_choice=None):
         if request.user.is_authenticated:
             page_data['following'] = author.follower.filter(
                 user=request.user
-                ).exists()
+            ).exists()
         else:
             page_data['following'] = False
 
@@ -203,7 +203,7 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
     recipe = get_object_or_404(
         Recipe,
         id=recipe_id
-        ) if recipe_id else None
+    ) if recipe_id else None
 
     # Если попытка редактирования не автором и не суперюзером, то отбой
     if (
