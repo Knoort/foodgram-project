@@ -147,9 +147,13 @@ MEDIA_ROOT = Path(BASE_DIR, 'media')
 LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "recipes:index"
 
-#  Движок email. filebased - для тестирования, smtp - для отправки.
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# указываем директорию, в которую будут складываться файлы писем
+# Движок email. filebased - для тестирования, smtp - для отправки.
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+# Папка, в которую будут складываться файлы писем
 EMAIL_FILE_PATH = Path(BASE_DIR, "sent_emails")
 
 DEFAULT_FROM_EMAIL = 'foodgram-noreply@gmail.com'
