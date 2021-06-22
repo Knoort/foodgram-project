@@ -9,8 +9,6 @@ if dotenv_path.is_file():
     load_dotenv(dotenv_path)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "foorgram.settings")
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 SECRET_KEY = os.getenv('DJANGO_KEY')
 
@@ -139,7 +137,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = Path(BASE_DIR, 'static')
-# if DEBUG:
 STATICFILES_DIRS = (
     Path(BASE_DIR, 'assets'),
 )
