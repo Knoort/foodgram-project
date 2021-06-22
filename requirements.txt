@@ -23,6 +23,7 @@ psycopg2
 python-dotenv
 gunicorn
 sqlparse
+asyncpg
 
 
 # not need in prod
