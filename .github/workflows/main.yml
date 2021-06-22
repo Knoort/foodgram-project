@@ -61,6 +61,7 @@ jobs:
     name: Deploy proect to server and run
     needs: build_and_push_to_docker_hub
     env:
+      PRJ_ROOT: ~/dev/foodgram-project/
       DJANGO_DEBUG: 'False'
       DB_ENGINE:    'django.db.backends.postgresql'
       DB_NAME:      'postgres'
@@ -82,7 +83,7 @@ jobs:
         passphrase: ${{ secrets.SRV_PASSWORD }}
         port: ${{ env.SRV_PORT }}
         source: "docker-compose.yaml, entrypoint.sh, nginx/default.conf"
-        target: "~/dev/foodgram-project1/"
+        target: ${{ env.PRJ_ROOT }}
         overwrite: true
 
     - name: make env file
@@ -94,7 +95,7 @@ jobs:
         passphrase: ${{ secrets.SRV_PASSWORD }}
         port: ${{ env.SRV_PORT }}
         script: |
-          cd ~/dev/foodgram-project/
+          cd ${{ env.PRJ_ROOT }}
           rm .env
           touch .env
           echo 'DJANGO_KEY="${{ secrets.DJANGO_KEY }}"' >> .env
@@ -116,7 +117,7 @@ jobs:
         passphrase: ${{ secrets.SRV_PASSWORD }}
         port: ${{ env.SRV_PORT }}
         script: |
-          cd ~/dev/foodgram-project/
+          cd ${{ env.PRJ_ROOT }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram:v1
           sudo docker-compose down
           sudo docker-compose up -d
