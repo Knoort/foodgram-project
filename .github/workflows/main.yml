@@ -59,7 +59,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: knoort/foodgram:v1
+          tags: ${{ secrets.DOCKER_USERNAME }}/foodgram:v1
 
 
   deploy_and_up:
@@ -122,6 +122,8 @@ jobs:
         port: ${{ env.SRV_PORT }}
         script: |
           cd ~/dev/foodgram-project/
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram:v1
+          sudo docker image prune -f
           sudo docker-compose down
           sudo docker-compose up -d
 
