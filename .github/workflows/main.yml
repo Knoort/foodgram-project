@@ -82,8 +82,8 @@ jobs:
         passphrase: ${{ secrets.SRV_PASSWORD }}
         port: ${{ env.SRV_PORT }}
         source: >
-          "docker-compose.yaml,entrypoint.sh, nginx/default.conf"
-        target: "~/dev/foodgram-project/"
+          "docker-compose.yaml, entrypoint.sh, nginx/default.conf"
+        target: "~/dev/foodgram-project1/"
         overwrite: true
 
     - name: make env file
