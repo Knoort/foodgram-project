@@ -64,6 +64,7 @@ jobs:
       PRJ_ROOT: ~/dev/foodgram-project/
       DJANGO_DEBUG: 'False'
       DJANGO_EMAIL: 'True'
+      LOCAL_WORK:   'False'
       DB_ENGINE:    'django.db.backends.postgresql'
       DB_NAME:      'postgres'
       DB_HOST:      'db'
@@ -102,6 +103,7 @@ jobs:
           echo 'DJANGO_KEY="${{ secrets.DJANGO_KEY }}"' >> .env
           echo 'DJANGO_DEBUG="${{ env.DJANGO_DEBUG }}"' >> .env
           echo 'DJANGO_EMAIL="${{ env.DJANGO_EMAIL }}"' >> .env
+          echo 'LOCAL_WORK="${{ env.LOCAL_WORK }}"' >> .env
           echo 'DB_ENGINE=${{ env.DB_ENGINE }}' >> .env
           echo 'DB_NAME=${{ env.DB_NAME }}' >> .env
           echo 'DB_HOST=${{ env.DB_HOST }}' >> .env

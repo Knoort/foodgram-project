@@ -16,6 +16,8 @@ DEBUG = bool(os.getenv('DJANGO_DEBUG') == 'True')
 
 EMAIL = bool(os.getenv('DJANGO_EMAIL') == 'True')
 
+LOCAL = bool(os.getenv('LOCAL_WORK') == 'True')
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -39,7 +41,7 @@ INSTALLED_APPS = [
     'recipes',
 ]
 
-if DEBUG is True:
+if DEBUG is True and LOCAL is True:
     INSTALLED_APPS += ['debug_toolbar']
 
 MIDDLEWARE = [
@@ -52,7 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if DEBUG is True:
+if DEBUG is True and LOCAL is True:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 INTERNAL_IPS = [
