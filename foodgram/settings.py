@@ -12,8 +12,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "foorgram.settings")
 
 SECRET_KEY = os.getenv('DJANGO_KEY')
 
-DOMAIN = os.getenv('DOMAIN')
-
 DEBUG = bool(os.getenv('DJANGO_DEBUG') == 'True')
 
 EMAIL = bool(os.getenv('DJANGO_EMAIL') == 'True')
@@ -81,7 +79,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'recipes.context_processors.tags',
                 'recipes.context_processors.purchases_count',
-                # 'users.context_processors.domain',
             ],
         },
     },
