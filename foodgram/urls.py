@@ -3,6 +3,8 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
+from .settings import LOCAL
+
 urlpatterns = [
     # Регистрация и авторизация
     path('auth/', include('users.urls', namespace='users')),
@@ -19,8 +21,9 @@ if settings.DEBUG:
     urlpatterns += static(
         settings.STATIC_URL, document_root=settings.STATIC_ROOT
     )
-    import debug_toolbar
-    urlpatterns += (path('__debug__/', include(debug_toolbar.urls)),)
+    if LOCAL:
+        import debug_toolbar
+        urlpatterns += (path('__debug__/', include(debug_toolbar.urls)),)
 
 
 handler404 = 'recipes.views.page_not_found'   # noqa

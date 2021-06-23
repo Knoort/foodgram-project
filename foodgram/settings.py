@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'recipes',
 ]
 
-if DEBUG is True and LOCAL is True:
+if DEBUG and LOCAL:
     INSTALLED_APPS += ['debug_toolbar']
 
 MIDDLEWARE = [
@@ -54,7 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-if DEBUG is True and LOCAL is True:
+if DEBUG and LOCAL:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 
 INTERNAL_IPS = [
