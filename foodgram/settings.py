@@ -14,6 +14,8 @@ SECRET_KEY = os.getenv('DJANGO_KEY')
 
 DEBUG = bool(os.getenv('DJANGO_DEBUG') == 'True')
 
+EMAIL = bool(os.getenv('DJANGO_EMAIL') == 'True')
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -148,10 +150,10 @@ LOGIN_URL = "users:login"
 LOGIN_REDIRECT_URL = "recipes:index"
 
 # Движок email. filebased - для тестирования, smtp - для отправки.
-if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-else:
+if EMAIL:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 
 # Папка, в которую будут складываться файлы писем
 EMAIL_FILE_PATH = Path(BASE_DIR, "sent_emails")
