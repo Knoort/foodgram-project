@@ -12,6 +12,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "foorgram.settings")
 
 SECRET_KEY = os.getenv('DJANGO_KEY')
 
+DOMAIN = os.getenv('DOMAIN')
+
 DEBUG = bool(os.getenv('DJANGO_DEBUG') == 'True')
 
 EMAIL = bool(os.getenv('DJANGO_EMAIL') == 'True')
@@ -27,6 +29,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'users',
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,6 +81,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'recipes.context_processors.tags',
                 'recipes.context_processors.purchases_count',
+                # 'users.context_processors.domain',
             ],
         },
     },
@@ -175,6 +179,8 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
 }
+
+SITE_ID = 1
 
 PAGINATION_PAGE_SIZE = 6
 PREVIEWS_COUNT = 3

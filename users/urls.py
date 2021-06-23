@@ -7,9 +7,11 @@ from django.contrib.auth.views import (
 )
 
 from .views import SignUp
+# from foodgram.settings import DEBUG, LOCAL, DOMAIN
 
 app_name = 'users'
 
+# project_domain = 'localhost' if DEBUG and LOCAL else DOMAIN
 
 urlpatterns = [
     path("signup/", SignUp.as_view(), name="signup"),
@@ -30,7 +32,10 @@ urlpatterns = [
             success_url=reverse_lazy('users:password_reset_done'),
             extra_context={
                 'header_title': 'Сброс пароля',
-            }
+            },
+            # extra_email_context={
+            #     'domain': project_domain
+            # }
         ),
         name='password_reset'
     ),
