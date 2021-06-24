@@ -17,7 +17,7 @@ services:
   web:
     image: knoort/foodgram:v1
     volumes:
-      - static:/code/static
+      - ./static:/code/static
       - ./media:/code/media
     restart: always
     depends_on:
@@ -28,7 +28,7 @@ services:
   nginx:
     image: nginx:1.19.0-alpine
     volumes:
-      - static:/static
+      - ./static:/static
       - ./media:/media
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     restart: always
