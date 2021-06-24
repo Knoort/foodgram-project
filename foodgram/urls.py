@@ -4,9 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from .settings import LOCAL
+from recipes.views import redirect_index
 
 urlpatterns = [
     # Регистрация и авторизация
+    path('', redirect_index, name='redirect_index'),
     path('auth/', include('users.urls', namespace='users')),
     path('about/', include('about.urls', namespace='about')),
     path('admin/', admin.site.urls),

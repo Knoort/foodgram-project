@@ -64,6 +64,12 @@ def server_error(request):
     return render(request, "misc/t500.html", status=500)
 
 
+def redirect_index(request):
+    return redirect(
+        f'recipes:{INDEX}', page_choice=INDEX
+    )
+
+
 def recipes_set(request, author_username=None, page_choice=None):
     page_data = PAGES_DATA[page_choice]
 
@@ -102,7 +108,7 @@ def recipes_set(request, author_username=None, page_choice=None):
         if request.user.is_authenticated:
             recipes = recipes.filter(pk__in=favorites.values('pk'))
         else:
-            return redirect('recipes:index')
+            return redirect(f'recipes:{INDEX}')
 
     paginator = Paginator(recipes, PAGINATION_PAGE_SIZE)
     page_num = request.GET.get('page')
