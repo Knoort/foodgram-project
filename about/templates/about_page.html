@@ -4,16 +4,48 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 {% endblock %}
-{% block main_header_title %}{% endblock %}
+{% block main_header_title %}
+{{ about_header_title }}
+{% endblock %}
 {% block main_header_content %}{% endblock %}
 
 {% block content %}
 <main class="main container">
-    <div class="custom-center-block">
-            <p class="custom-text-block">{{ about_text }}</p>
-        <div class="custom-button-block">
-            <button class="button button_style_blue">Перейти на главную</button>
-        </div>
+
+    {% with curr_url=request.resolver_match.url_name %}
+        {% if curr_url == 'author' %}
+
+            <div class="custom-center-block">
+                <p class="about-text-block">{{ about_text }}</p>
+            </div>
+            <p class="about-text-block">
+            </p>
+
+        {% elif curr_url == 'tech' %}
+
+            <div class="custom-center-block">
+                {% for tech in about_table %}
+                    <div class="form__group">
+                        {{tech.name}}
+                        <a style="margin-left: 2em" href="{{tech.site}}">
+                            {{ tech.site }}
+                        </a>
+                    </div>
+                    <br>
+                {% endfor %}
+            </div>
+            <br>
+            <div class="about-text-block">
+                {{ about_text }}
+                <br>
+            </div>
+
+        {% endif %}
+    {% endwith %}
+
+    <div class="custom-button-block">
+        <a href="{% url 'recipes:index' %}" class="button button_style_blue">Перейти на главную</a>
     </div>
+
 </main>
 {% endblock %}

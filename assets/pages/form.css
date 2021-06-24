@@ -21,6 +21,7 @@
 @import "../blocks/nav/__badge/nav__badge.css";
 
 @import "../blocks/main/main.css";
+@import "../blocks/main/center-block.css";
 @import "../blocks/main/__header/main__header.css";
 @import "../blocks/main/__title/main__title.css";
 

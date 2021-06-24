@@ -1,5 +1,6 @@
 .custom-center-block {
   display: block;
+  font-size: 20px;
 }
 
 .custom-text-block {
@@ -10,7 +11,24 @@
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
+  white-space: normal;
+  width: 80%;
+  line-height: 1.5em;
+}
+
+.about-text-block {
+  height: 10em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  white-space: pre-wrap;
+  width: 80%;
+  line-height: 1.8em;
 }
 
 .custom-button-block {

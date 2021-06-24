@@ -23,6 +23,7 @@
 @import "../blocks/nav/__badge/nav__badge.css";
 
 @import "../blocks/main/main.css";
+@import "../blocks/main/center-block.css";
 @import "../blocks/main/__header/main__header.css";
 @import "../blocks/main/__title/main__title.css";
 
@@ -50,7 +51,6 @@
 @import "../blocks/recipe/__image/_big/recipe__image_big.css";
 
 @import "../blocks/icon-time/icon-time.css";
-
 
 @import "../blocks/badge/badge.css";
 @import "../blocks/badge/_style/badge_style_blue.css";

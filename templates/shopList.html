@@ -20,7 +20,13 @@
                 {% include 'includes/recipePurchasePreview.html' %}
             {% endfor %}
         </ul>
-        <a href="{% url 'recipes:download' %}"><button class="button button_style_blue">Скачать список</button></a>
+        {% if purchases_count  %}
+            <a href="{% url 'recipes:download' %}"><button class="button button_style_blue">Скачать список</button></a>
+        {% else %}
+        <div class="custom-center-block">
+            <p class="custom-text-block">У вас нет ни одной выбранной покупки </p>
+        </div>
+        {% endif %}
     </div>
 
 {% endblock %}
