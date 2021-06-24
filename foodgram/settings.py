@@ -176,8 +176,10 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
 }
-
-SITE_ID = 1
+if LOCAL:
+    SITE_ID = 3
+else:
+    SITE_ID = 1
 
 PAGINATION_PAGE_SIZE = 6
 PREVIEWS_COUNT = 3

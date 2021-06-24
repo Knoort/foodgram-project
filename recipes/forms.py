@@ -9,7 +9,8 @@ class RecipeForm(forms.ModelForm):
 
     class Meta:
         model = Recipe
-        fields = ['name', 'image', 'description', 'cooking_time', 'tags']
+        fields = ['name', 'tags', 'cooking_time', 'description', 'image']
+
         widgets = {
             'tags': forms.CheckboxSelectMultiple(),
         }
@@ -19,16 +20,6 @@ class RecipeForm(forms.ModelForm):
         if not tags:
             raise forms.ValidationError('Укажите теги!')
         return tags
-
-    def clean_cooking_time(self):
-        time = self.cleaned_data['cooking_time']
-        if not str(time).isdigit():
-            raise forms.ValidationError('Неправильное время приготовления!')
-        if not int(time) > 0:
-            raise forms.ValidationError(
-                'Время приготовления должно быть положительным!'
-            )
-        return time
 
     def clean(self):
         ingredients = get_ingredients_from_post(self.data)

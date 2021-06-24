@@ -212,12 +212,12 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
         not request.user.is_superuser
     ):
         return redirect('recipes:recipe_view_redirect', recipe_id=recipe.id)
-
     form = RecipeForm(
         request.POST or None,
         files=request.FILES or None,
         instance=recipe
     )
+
     # Редактирование рецепта - 1 открытие формы.
     if recipe and not request.POST:
         ingredients = get_ingredients_from_qs(recipe.recipeingredients.all())

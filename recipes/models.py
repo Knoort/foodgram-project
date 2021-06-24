@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db import models
 from django.db.models import F, Q
+from django.core.validators import MinValueValidator
 
 from django.contrib.auth import get_user_model
 
@@ -73,24 +74,35 @@ class Recipe(models.Model):
     name = models.CharField(
         max_length=100,
         blank=False,
+        default='',
         verbose_name='Название рецепта'
     )
-    image = models.ImageField('Изображение', upload_to='recipes/')
+    image = models.ImageField(
+        'Изображение',
+        upload_to='recipes/',
+        default='<Файл не выбран>'
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='Автор'
     )
-    description = models.TextField(verbose_name='Описание')
+    description = models.TextField(
+        verbose_name='Описание',
+        default=''
+    )
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredients',
         blank=True
     )
-    cooking_time = models.PositiveSmallIntegerField(
-        verbose_name='Время приготовления'
-    )
+    cooking_time = models.SmallIntegerField(
+        verbose_name='Время приготовления',
+        validators=[MinValueValidator(
+            1,
+            message='Время приготовления должно быть положительным!'
+        )])
     slug = models.SlugField(
         max_length=50,
         auto_created=True,
