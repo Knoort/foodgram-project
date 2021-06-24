@@ -4,13 +4,25 @@ from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.html import format_html
 
-from .models import Recipe, Favorites
+from .models import Recipe, Favorites, RecipeIngredients, Subscriptions
 
 
 class RecipeIngredientsInline(admin.TabularInline):
     model = Recipe.ingredients.through
     extra = 1
     min_num = 1
+
+
+class RecipeIngredientsadmin(admin.ModelAdmin):
+    list_display = (
+        'pk', 'recipe', 'ingredient_id', 'amount'
+    )
+    search_fields = ('recipe', 'ingredient')
+
+    def ingredient_id(self, obj):
+        return obj.ingredient.pk
+
+    ingredient_id.short_description = 'ingr.id'
 
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -30,6 +42,21 @@ class RecipeAdmin(admin.ModelAdmin):
 
 class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name', )
+
+
+class SubscriptionsAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk', 'user_id', 'user', 'author_id', 'author'
+    )
+
+    def user_id(self, obj):
+        return obj.user.pk
+
+    def author_id(self, obj):
+        return obj.author.pk
+
+    user_id.short_description = 'user.id'
+    author_id.short_description = 'author.id'
 
 
 class FavoritesAdmin(admin.ModelAdmin):
@@ -54,5 +81,7 @@ class FavoritesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Recipe, RecipeAdmin)
+admin.site.register(RecipeIngredients, RecipeIngredientsadmin)
+admin.site.register(Subscriptions, SubscriptionsAdmin)
 admin.site.register(Favorites, FavoritesAdmin)
 autoregister('recipes', )
