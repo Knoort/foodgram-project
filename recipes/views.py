@@ -1,10 +1,12 @@
-from django.shortcuts import get_object_or_404, redirect, render
-from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect, render, reverse
+
 from django.db.models import Exists, OuterRef
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
-from foodgram.settings import PAGINATION_PAGE_SIZE, PREVIEWS_COUNT
+from urllib.parse import urlencode
+
+from foodgram.settings import PREVIEWS_COUNT
 
 from .forms import RecipeForm
 from .models import (
@@ -12,6 +14,7 @@ from .models import (
     Recipe
 )
 from .utils import (
+    get_paginator,
     get_ingredients_from_post,
     get_ingredients_from_qs,
     prepare_and_save_recipe,
@@ -65,9 +68,9 @@ def server_error(request):
 
 
 def redirect_index(request):
-    return redirect(
-        f'recipes:{INDEX}', page_choice=INDEX
-    )
+    params = urlencode({'page': 1}, doseq=True)
+    index_url = reverse(f'recipes:{INDEX}', kwargs={'page_choice': INDEX})
+    return redirect(f'{index_url}?{params}')
 
 
 def recipes_set(request, author_username=None, page_choice=None):
@@ -110,9 +113,10 @@ def recipes_set(request, author_username=None, page_choice=None):
         else:
             return redirect(f'recipes:{INDEX}')
 
-    paginator = Paginator(recipes, PAGINATION_PAGE_SIZE)
-    page_num = request.GET.get('page')
-    page = paginator.get_page(page_num)
+    try:
+        page, paginator = get_paginator(request, recipes)
+    except Exception:
+        return redirect('redirect_index')
 
     context = {
         'page_data': page_data,
@@ -181,9 +185,10 @@ def subscriptions(request):
     ).prefetch_related(
         'recipes'
     )
-    paginator = Paginator(authors, PAGINATION_PAGE_SIZE)
-    page_num = request.GET.get('page')
-    page = paginator.get_page(page_num)
+    try:
+        page, paginator = get_paginator(request, authors)
+    except Exception:
+        return redirect(f'recipes:{SUBSCRIPTIONS}')
 
     context = {
         'page_data': page_data,
@@ -199,7 +204,7 @@ def delete_recipe(request, recipe_id=None, confirm=None):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if confirm:
         recipe.delete()
-        return redirect('recipes:index')
+        return redirect(f'recipes:{INDEX}')
 
     return render(request, 'deleteRecipeConfirm.html', {'recipe': recipe})
 

@@ -1,18 +1,29 @@
 import os, mimetypes, tempfile
 
 from decimal import Decimal
+from unidecode import unidecode
 
 from django.shortcuts import get_object_or_404
 from django.db import transaction, IntegrityError
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.utils.text import slugify
-from unidecode import unidecode
+from django.core.paginator import Paginator
 
 from .models import Ingredient, Recipe, RecipeIngredients
+
+from foodgram.settings import PAGINATION_PAGE_SIZE
 
 
 def decode_slugify(txt):
     return slugify(unidecode(txt))
+
+
+def get_paginator(request, objs):
+    paginator = Paginator(objs, PAGINATION_PAGE_SIZE)
+    page_num = request.GET.get('page', 1)
+    paginator.validate_number(page_num)
+    page = paginator.get_page(page_num)
+    return page, paginator
 
 
 def get_ingredients_from_qs(recipe_ings) -> dict:
