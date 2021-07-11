@@ -1,0 +1,47 @@
+{% load static %}
+{% load user_filters %}
+<div class="form-container">
+    <form class="form" method="post">
+        {% csrf_token %}
+        <p class="form__field-group">
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
+                {{ field|addclass:"form__input" }}
+            {% endfor %}
+            <button class="button button_style_blue">Сохранить</button>
+        </p>
+        {% comment %} <a>{{ form.non_field_errors }}</a>
+
+        <div class="form__group">
+            <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
+            <div class="form__field-group">
+                <input
+                    type="{{ field.widget_type }}"
+                    id="{{ field.id_for_label }}"
+                    name="{{ field.html_name }}"
+                    value="{{ field.value }}"
+                    class="form__input"
+                >
+                <span class="form__error"> {{ field.errors }}</span>
+            </div>
+        </div>
+        <div class="form__group">
+            <label for="{{ form.units.id_for_label }}" class="form__label">{{ form.units.label }}</label>
+            <div class="form__field-group">
+                <input
+                    type="{{ form.units.widget_type }}"
+                    id="{{ form.units.id_for_label }}"
+                    units="{{ form.units.html_name }}"
+                    value="{{ form.units.value }}"
+                    class="form__input"
+                >
+                <span class="form__error"> {{ form.units.errors }}</span>
+            </div>
+        </div> {% endcomment %}
+
+        <div class="form__footer">
+
+        </div>
+
+    </form>
+</div>

@@ -8,6 +8,7 @@ from .views import (
     recipes_set,
     subscriptions,
     purchases,
+    recipe_ings,
     INDEX,
     AUTHOR_PROF,
     FAVORITES,
@@ -27,6 +28,11 @@ purchases_urls = [
     path('', purchases, name=PURCHASES),
     path('download/', purchases, name='download', kwargs={'download': True}),
 ]
+ings_urls = [
+    path('', recipe_ings, name='recipe_ings'),
+    #path('', recipe_ings, name='recipe_ings')
+]
+
 
 urlpatterns = [
     path('', recipes_set, name=INDEX, kwargs={'page_choice': INDEX}),
@@ -34,6 +40,7 @@ urlpatterns = [
     path('favorites/', include(favorites_urls)),
     path('subscriptions/', include(subscriptions_urls)),
     path('purchases/', include(purchases_urls)),
+    path('ings/', include(ings_urls)),
 
     path('new/', new_edit_recipe, name='new_recipe'),
     path(

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load recipe_filters %}
+{% load user_filters %}
 {% block title %} Создание рецепта {% endblock %}
 
 {% block css_block %}
@@ -120,28 +121,38 @@
                             name="{{ form.image.name }}"
                             id="{{ form.image.id_for_label }}"
                             value="{{form.image.value}}"
-                        >
+                        >{{ form.image.label }}</button>
                     {% endif %}
                     <span class="form__error">{{ form.image.errors }}</span>
                 </div>
             </div>
 
-            <div
-            class="form__footer">
-            {% if recipe %}
-                <button class="button button_style_blue">Сохранить</button>
-                <a
-                    style="margin-left: 2.5em"
-                    href="{% url 'recipes:delete_recipe' recipe.id %}"
-                    class="form__ingredient-link">Удалить
-                </a>
-            {% else %}
-                <button class="button button_style_blue">Создать рецепт</button>
-            {% endif %}
-            </div>
+            <div class="form__footer">
+                {% if recipe %}
+                    <button class="button button_style_blue">Сохранить</button>
+                    <a
+                        style="margin-left: 2.5em"
+                        href="{% url 'recipes:delete_recipe' recipe.id %}"
+                        class="form__ingredient-link">Удалить
+                    </a>
+                {% else %}
+                    <button class="button button_style_blue">Создать рецепт</button>
+                {% endif %}
 
+                {% if user|has_group:'change_ings' %}
+                    <button
+                        type="submit"
+                        style="margin-left: 2.5em"
+                        class="button button_style_blue"
+                        name="edit_ingredients"
+                        {% if recipe %}value="{{recipe.id}}"{% endif %}
+                    >Редактировать ингредиенты</button><br>
+                {% endif %}
+
+            </div>
         </form>
     </div>
+
 {% endblock %}
 
 {% block js_block %}

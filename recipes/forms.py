@@ -1,18 +1,31 @@
 from django import forms
 from decimal import Decimal, InvalidOperation
 
-from .models import Recipe
+from .models import Recipe, RecipeTag, Ingredient
 from .utils import get_ingredients_from_post
+
+TAGS = RecipeTag.objects.values_list('name')
+
+
+class IngredientForm(forms.ModelForm):
+
+    class Meta:
+        model = Ingredient
+        fields = ['name', 'units']
 
 
 class RecipeForm(forms.ModelForm):
-
+    tag = forms.MultipleChoiceField(
+        required=False,
+        choices=TAGS,
+    )
     class Meta:
         model = Recipe
         fields = ['name', 'tags', 'cooking_time', 'description', 'image']
 
         widgets = {
-            'tags': forms.CheckboxSelectMultiple(),
+            'tags': forms.CheckboxSelectMultiple(choices=TAGS),
+            'description': forms.Textarea(),
         }
 
     def clean_tags(self):

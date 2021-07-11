@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+{% load recipe_filters %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'pages/form.css' %}">
+{% endblock %}
+
+{% block main_header_title %} {{ header_title }} {% endblock %}
+{% block main_header_content %}{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <form class="form" method="post" action="{% url 'recipes:recipe_ings' %}">
+            {% csrf_token %}
+
+            {% comment %} <p class="form__info-text">
+                Редактирование ингредиента:
+            </p> {% endcomment %}
+
+            <a>{{ form.non_field_errors }}</a>
+
+            <div class="form__group">
+                <label for="{{ form.name.id_for_label }}" class="form__label">{{ form.name.label }}</label>
+                <div class="form__field-group">
+                    <input
+                        type="{{ form.name.widget_type }}"
+                        id="{{ form.name.id_for_label }}"
+                        name="{{ form.name.html_name }}"
+                        value="{{ form.name.value }}"
+                        class="form__input"
+                    >
+                    <span class="form__error"> {{ form.name.errors }}</span>
+                </div>
+            </div>
+
+            <div class="form__group">
+                <label for="{{ form.units.id_for_label }}" class="form__label">{{ form.units.label }}</label>
+                <div class="form__field-group">
+                    <input
+                        type="{{ form.units.widget_type }}"
+                        id="{{ form.units.id_for_label }}"
+                        units="{{ form.units.html_name }}"
+                        value="{{ form.units.value }}"
+                        class="form__input"
+                    >
+                    <span class="form__error"> {{ form.units.errors }}</span>
+                </div>
+            </div>
+
+           <div class="form__footer">
+               <button class="button button_style_blue">Сохранить</button>
+           </div>
+
+        </form>
+    </div>
+{% endblock %}

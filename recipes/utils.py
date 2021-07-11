@@ -2,8 +2,9 @@ import os, mimetypes, tempfile
 
 from decimal import Decimal
 from unidecode import unidecode
+from urllib.parse import urlencode
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, reverse
 from django.db import transaction, IntegrityError
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.utils.text import slugify
@@ -24,6 +25,27 @@ def get_paginator(request, objs):
     paginator.validate_number(page_num)
     page = paginator.get_page(page_num)
     return page, paginator
+
+
+def redirect_with_params(request, url=None, **kwargs):
+        if url:
+            base_url = url
+            get_dict = {}
+        else:
+            base_url = request.path
+            get_dict = dict(request.GET)
+
+        for key in kwargs:
+            get_dict[key] = kwargs[key]
+        # print(get_dict)
+        # get_params = urlencode(get_dict)
+        # print(get_params)
+        # get_params = urlencode(request.GET)
+        # print(get_params)
+        get_params = ''
+        for key in get_dict:
+            get_params += urlencode({key: get_dict[key]}, doseq=True) + '&'
+        return redirect(f'{base_url}?{get_params}')
 
 
 def get_ingredients_from_qs(recipe_ings) -> dict:

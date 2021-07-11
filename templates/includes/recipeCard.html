@@ -1,13 +1,30 @@
 {% load recipe_filters %}
 <div class="card" data-id="{{recipe.id}}">
     {% csrf_token %}
-    <a href="{% url 'recipes:recipe_view_redirect' recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe|field_verbose_name:"image" }}" class="card__image"></a>
+    <a
+        href="{% url 'recipes:recipe_view_redirect' recipe.id %}"
+        class="link"
+        target="_blank"
+    >
+        <img
+            src="{{ recipe.image.url }}"
+            alt="{{ recipe|field_verbose_name:"image" }}"
+            class="card__image"
+        >
+    </a>
 
     <div class="card__body">
-        <a class="card__title link" href="{% url 'recipes:recipe_view_redirect' recipe.id %}" target="_blank">{{ recipe.name }}</a>
+        <a
+            class="card__title link"
+            href="{% url 'recipes:recipe_view_redirect' recipe.id %}"
+            target="_blank"
+        >
+            {{ recipe.name }}
+        </a>
         <ul class="card__items">
             {% for tag in recipe.tags.values %}
-                <li class="card__item"><span class="badge badge_style_{{ tag.color }}">{{ tag.display_name }}</span></li>
+                <li class="card__item">
+                <span class="badge badge_style_{{ tag.color }}">{{ tag.display_name }}</span></li>
             {% endfor %}
         </ul>
         <div class="card__items card__items_column">

@@ -1,20 +1,24 @@
+from urllib.parse import urlencode
+
 from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.http import QueryDict
 
 from django.db.models import Exists, OuterRef
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
-
-from urllib.parse import urlencode
+from django.contrib.auth.decorators import login_required, permission_required
 
 from foodgram.settings import PREVIEWS_COUNT
 
-from .forms import RecipeForm
+from .forms import RecipeForm, IngredientForm
 from .models import (
     TagChoices,
-    Recipe
+    Recipe,
+    Ingredient,
+    RecipeTag
 )
 from .utils import (
     get_paginator,
+    redirect_with_params,
     get_ingredients_from_post,
     get_ingredients_from_qs,
     prepare_and_save_recipe,
@@ -24,7 +28,8 @@ from .utils import (
 from .context_processors import tags
 
 User = get_user_model()
-TAGS = TagChoices.values
+# TAGS = TagChoices.values
+TAGS = RecipeTag.objects.values_list('name')
 
 INDEX = 'index'
 AUTHOR_PROF = 'author_profile'
@@ -68,9 +73,7 @@ def server_error(request):
 
 
 def redirect_index(request):
-    params = urlencode({'page': 1}, doseq=True)
-    index_url = reverse(f'recipes:{INDEX}', kwargs={'page_choice': INDEX})
-    return redirect(f'{index_url}?{params}')
+    return redirect(f'recipes:{INDEX}')
 
 
 def recipes_set(request, author_username=None, page_choice=None):
@@ -98,6 +101,7 @@ def recipes_set(request, author_username=None, page_choice=None):
 
     if page_choice == AUTHOR_PROF:
         author = get_object_or_404(User, username=author_username)
+        print(author.get_all_permissions())
         recipes = recipes.filter(author=author)
         page_data['author'] = author
         if request.user.is_authenticated:
@@ -116,7 +120,7 @@ def recipes_set(request, author_username=None, page_choice=None):
     try:
         page, paginator = get_paginator(request, recipes)
     except Exception:
-        return redirect('redirect_index')
+        return redirect_with_params(request, page='1')
 
     context = {
         'page_data': page_data,
@@ -188,7 +192,7 @@ def subscriptions(request):
     try:
         page, paginator = get_paginator(request, authors)
     except Exception:
-        return redirect(f'recipes:{SUBSCRIPTIONS}')
+        return redirect_with_params(request, page='1')
 
     context = {
         'page_data': page_data,
@@ -201,6 +205,18 @@ def subscriptions(request):
 
 @login_required
 def delete_recipe(request, recipe_id=None, confirm=None):
+    recipe = get_object_or_404(
+        Recipe,
+        id=recipe_id
+    ) if recipe_id else None
+    form = RecipeForm(
+        request.POST or None,
+        files=request.FILES or None,
+        instance=recipe
+    )
+    print(form.data.getlist('tags'))
+    print('POST', request.POST, sep='\n')
+    print('GET', request.GET, sep='\n'    )
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if confirm:
         recipe.delete()
@@ -211,6 +227,19 @@ def delete_recipe(request, recipe_id=None, confirm=None):
 
 @login_required
 def new_edit_recipe(request, recipe_id=None, slug=None):
+    print('in, GET',request.GET)
+    print('in, POST',request.POST)
+    if 'edit_ingredients' in request.POST:
+        ings = get_ingredients_from_post(request.POST)
+        recipe_ings_names = [ing['name'] for ing in ings.values()]
+        url = reverse('recipes:recipe_ings')
+        return redirect_with_params(
+            request,
+            url,
+            ings=recipe_ings_names,
+            recipe_id=recipe_id
+        )
+    # print(request.user.groups.all().values_list('pk', 'name'))
     recipe = get_object_or_404(
         Recipe,
         id=recipe_id
@@ -228,7 +257,9 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
         files=request.FILES or None,
         instance=recipe
     )
-
+    # Редактирование рецепта - возврат из редактирования ингредиентов
+    if 'ingredients_edited' in request.GET:
+        print(request.GET['ingredients_edited'])
     # Редактирование рецепта - 1 открытие формы.
     if recipe and not request.POST:
         ingredients = get_ingredients_from_qs(recipe.recipeingredients.all())
@@ -246,3 +277,70 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
         'ingredients': ingredients,
     }
     return render(request, 'formRecipe.html', context)
+
+@permission_required(
+    'recipes.add_ingredient',
+    'recipes.view_ingredient',
+    'recipes.change_recipeingredients'
+)
+def recipe_ings(request):
+    print('in, GET',request.GET)
+    print('in, POST',request.POST)
+    recipe_id = request.GET.get('recipe_id', '')
+    if recipe_id.isdigit():
+        recipe = get_object_or_404(
+            Recipe,
+            id=int(recipe_id)
+        )
+    else:
+        recipe = None
+
+    recipe_ings = request.GET.getlist('ings', [])
+    ing_edit = request.GET.get('edit', None)
+    ing_edit = int(ing_edit) if ing_edit and ing_edit.isdigit() else None
+
+    ings = Ingredient.objects.filter(name__in=recipe_ings)
+    for ing in ings:
+        ing.link = (
+            urlencode({'ings': recipe_ings}, doseq=True) + '&' + 
+            urlencode({
+                'edit': ing.pk,
+                'recipe_id': recipe_id
+            })
+        )
+    context = {
+        'recipe': recipe,
+        'ings': ings
+    }
+    if not ing_edit:
+        return render(request, 'IngredientsList.html', context)
+
+    ing = get_object_or_404(Ingredient, pk=ing_edit)
+    form = IngredientForm(
+        request.POST or None,
+        instance=ing
+    )
+    if request.POST and form.is_valid():
+        form.save()
+        print('save, GET',request.GET)
+        print('save, POST',request.POST)
+        url = reverse('recipes:recipe_ings')
+        return redirect_with_params(
+            request,
+            url,
+            ings=recipe_ings,
+            recipe_id=recipe_id
+        )
+
+    context.update({'form': form})
+    print('edit, GET',request.GET)
+    print('edit, POST',request.POST)
+    return render(request, 'IngredientsList.html', context)
+
+
+def edit_ing(request, ing_id):
+    ing = get_object_or_404(Ingredient(pk=ing_id))
+    form = IngredientForm(request.POST or None, instance=ing)
+    if form.is_valid():
+        form.save()
+        return redirect(to, permanent=...)

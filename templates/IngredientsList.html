@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% load recipe_filters %}
+
+
+{% block title %}Ингредиенты рецепта{{ recipe.name|default:'Новый рецепт' }}{% endblock %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'pages/single.css' %}">
+{% endblock %}
+
+{% block main_header_title %}
+    <h1 class="single-card__title">Ингредиенты рецепта {{ recipe.name|default:'Новый рецепт' }}:</h1>
+{% endblock %}
+
+{% block main_header_content %}
+<br><br><br>
+{% endblock %}
+
+{% block content %}
+
+    {% for ing in ings %}
+        {% if ing.pk == request.GET.edit|int_format %}
+            {% include 'includes/formIngredient.html' %}
+        {% else %}
+            <ul class="single-card__items">
+                <li class="single-card__item">
+                    <a href="?{{ ing.link }}" class="single-card__section-text">{{ ing.pk }}</a>
+                </li>
+                <div class="single-card__item">
+                    <p style="margin-left: 2.5em" class="single-card__section-text">{{ ing.name }}</p>
+                </div>
+                <div class="single-card__item">
+                    <p style="margin-left: 2.5em" class="single-card__section-text">{{ ing.units }}</p>
+                </div>
+            </ul>
+        {% endif %}
+    {% endfor %}
+
+    {% if not request.GET.edit %}
+        <form
+            class="form"
+            method="get"
+            action="
+                {% if recipe %}
+                    {% url 'recipes:edit_recipe' recipe.id recipe.slug %}
+                {% else %}
+                    {% url 'recipes:new_recipe' %}
+                {% endif %}
+            "
+        >
+            {% csrf_token %}
+            <button
+                type="submit"
+                style="margin-left: 2.5em"
+                class="button button_style_blue"
+                name="ingredients_edited"
+                value="{{ ings }}"
+            >Вернуться к редактированию рецепта</button><br>
+        </form>
+    {% endif %}
+    
+
+{% endblock %}

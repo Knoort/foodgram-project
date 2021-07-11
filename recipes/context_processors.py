@@ -5,7 +5,6 @@ from urllib.parse import urlencode
 
 
 def tags(request):
-
     all_tags = RecipeTag.objects.all()
     tags_checked = request.GET.getlist('tags', [])
     for tag in all_tags:
