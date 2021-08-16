@@ -1,7 +1,7 @@
 from urllib.parse import urlencode
 
 from django.shortcuts import get_object_or_404, redirect, render, reverse
-from django.http import QueryDict
+# from django.http import QueryDict
 
 from django.db.models import Exists, OuterRef
 from django.contrib.auth import get_user_model
@@ -11,7 +11,6 @@ from foodgram.settings import PREVIEWS_COUNT
 
 from .forms import RecipeForm, IngredientForm
 from .models import (
-    TagChoices,
     Recipe,
     Ingredient,
     RecipeTag
@@ -28,7 +27,7 @@ from .utils import (
 from .context_processors import tags
 
 User = get_user_model()
-# TAGS = TagChoices.values
+# TAGS = TagChoices.values все существующие объекты только актуальные из базы
 TAGS = RecipeTag.objects.values_list('name')
 
 INDEX = 'index'
@@ -61,6 +60,7 @@ PAGES_DATA = {
 }
 
 user_data = {}
+
 
 def page_not_found(request, exception):
     # Переменную exception не выводим
@@ -206,28 +206,17 @@ def subscriptions(request):
 
 @login_required
 def delete_recipe(request, recipe_id=None, confirm=None):
-    recipe = get_object_or_404(
-        Recipe,
-        id=recipe_id
-    ) if recipe_id else None
-    form = RecipeForm(
-        request.POST or None,
-        files=request.FILES or None,
-        instance=recipe
-    )
-
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if confirm:
         recipe.delete()
         return redirect(f'recipes:{INDEX}')
-
     return render(request, 'deleteRecipeConfirm.html', {'recipe': recipe})
 
 
 @login_required
 def new_edit_recipe(request, recipe_id=None, slug=None):
-    print('in, GET',request.GET)
-    print('in, POST',request.POST)
+    print('in, GET', request.GET)
+    print('in, POST', request.POST)
     if 'edit_ingredients' in request.POST:
         ings = get_ingredients_from_post(request.POST)
         recipe_ings_names = [ing['name'] for ing in ings.values()]
@@ -236,7 +225,7 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
             user_data.update({request.user: {}})
         user_data[request.user][f'edited_ings_{recipe_id}'] = ings
         print(user_data[request.user])
-        
+
         url = reverse('recipes:recipe_ings')
         return redirect_with_params(
             request,
@@ -320,7 +309,7 @@ def recipe_ings(request):
     ings = Ingredient.objects.filter(name__in=recipe_ings)
     for ing in ings:
         ing.link = (
-            urlencode({'ings': recipe_ings}, doseq=True) + '&' + 
+            urlencode({'ings': recipe_ings}, doseq=True) + '&' +
             urlencode({
                 'edit': ing.pk,
                 'recipe_id': recipe_id
@@ -354,4 +343,3 @@ def recipe_ings(request):
     # print('edit, GET',request.GET)
     # print('edit, POST',request.POST)
     return render(request, 'IngredientsList.html', context)
-

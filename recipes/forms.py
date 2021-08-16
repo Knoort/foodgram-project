@@ -19,6 +19,7 @@ class RecipeForm(forms.ModelForm):
         required=False,
         choices=TAGS,
     )
+
     class Meta:
         model = Recipe
         fields = ['name', 'tags', 'cooking_time', 'description', 'image']

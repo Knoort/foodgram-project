@@ -30,7 +30,6 @@ purchases_urls = [
 ]
 ings_urls = [
     path('', recipe_ings, name='recipe_ings'),
-    #path('', recipe_ings, name='recipe_ings')
 ]
 
 
