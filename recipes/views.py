@@ -355,10 +355,3 @@ def recipe_ings(request):
     # print('edit, POST',request.POST)
     return render(request, 'IngredientsList.html', context)
 
-
-def edit_ing(request, ing_id):
-    ing = get_object_or_404(Ingredient(pk=ing_id))
-    form = IngredientForm(request.POST or None, instance=ing)
-    if form.is_valid():
-        form.save()
-        return redirect(to, permanent=...)
