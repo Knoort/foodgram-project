@@ -37,11 +37,7 @@ def redirect_with_params(request, url=None, **kwargs):
 
         for key in kwargs:
             get_dict[key] = kwargs[key]
-        # print(get_dict)
-        # get_params = urlencode(get_dict)
-        # print(get_params)
-        # get_params = urlencode(request.GET)
-        # print(get_params)
+
         get_params = ''
         for key in get_dict:
             get_params += urlencode({key: get_dict[key]}, doseq=True) + '&'

@@ -141,7 +141,7 @@
 
                 {% if user|has_group:'change_ings' %}
                     <button
-                        type="submit"
+                        {% comment %} type="submit" {% endcomment %}
                         style="margin-left: 2.5em"
                         class="button button_style_blue"
                         name="edit_ingredients"

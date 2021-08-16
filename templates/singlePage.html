@@ -76,7 +76,7 @@
             </ul>
 
             <div class="single-card__section">
-                <h3 class="single-card__section-title">{{ recipe_ings.0.ingredient|obj_verbose_name_plural }}:</h3>
+                <h3 class="single-card__section-title">{% if recipe_ings %}{{ recipe_ings.0.ingredient|obj_verbose_name_plural }}{% endif %}:</h3>
                 <div class="single-card__items single-card__items_column">
                 {% for recipe_ing in recipe_ings %}
                     <p class=" single-card__section-item">{{ recipe_ing.ingredient.name }} - {{ recipe_ing.amount }} {{ recipe_ing.ingredient.units }}.</p>

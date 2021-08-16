@@ -60,6 +60,7 @@ PAGES_DATA = {
     }
 }
 
+user_data = {}
 
 def page_not_found(request, exception):
     # Переменную exception не выводим
@@ -214,9 +215,7 @@ def delete_recipe(request, recipe_id=None, confirm=None):
         files=request.FILES or None,
         instance=recipe
     )
-    print(form.data.getlist('tags'))
-    print('POST', request.POST, sep='\n')
-    print('GET', request.GET, sep='\n'    )
+
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if confirm:
         recipe.delete()
@@ -232,6 +231,12 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
     if 'edit_ingredients' in request.POST:
         ings = get_ingredients_from_post(request.POST)
         recipe_ings_names = [ing['name'] for ing in ings.values()]
+
+        if request.user not in user_data:
+            user_data.update({request.user: {}})
+        user_data[request.user][f'edited_ings_{recipe_id}'] = ings
+        print(user_data[request.user])
+        
         url = reverse('recipes:recipe_ings')
         return redirect_with_params(
             request,
@@ -257,15 +262,27 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
         files=request.FILES or None,
         instance=recipe
     )
-    # Редактирование рецепта - возврат из редактирования ингредиентов
-    if 'ingredients_edited' in request.GET:
-        print(request.GET['ingredients_edited'])
-    # Редактирование рецепта - 1 открытие формы.
-    if recipe and not request.POST:
-        ingredients = get_ingredients_from_qs(recipe.recipeingredients.all())
-    # Создание рецепта или повторная отправка формы.
+
+    # возврат из редактирования ингредиентов
+    if (
+        'ingredients_edited' in request.GET and
+        request.user in user_data and
+        f'edited_ings_{recipe_id}' in user_data[request.user]
+    ):
+        ingredients = user_data[request.user].pop(
+            f'edited_ings_{recipe_id}'
+        )
+        print('edited, OK', ingredients)
+    elif recipe and not request.POST:
+        # Редактирование рецепта - 1 открытие формы.
+        ingredients = get_ingredients_from_qs(
+            recipe.recipeingredients.all()
+        )
+        print('recipe, not POST', ingredients)
     else:
+        # Создание рецепта или повторная отправка формы.
         ingredients = get_ingredients_from_post(request.POST)
+        print('not recipe or POST', ingredients)
 
     if form.is_valid():
         recipe = prepare_and_save_recipe(request, form, recipe, ingredients)
@@ -278,14 +295,15 @@ def new_edit_recipe(request, recipe_id=None, slug=None):
     }
     return render(request, 'formRecipe.html', context)
 
+
 @permission_required(
     'recipes.add_ingredient',
     'recipes.view_ingredient',
     'recipes.change_recipeingredients'
 )
 def recipe_ings(request):
-    print('in, GET',request.GET)
-    print('in, POST',request.POST)
+    # print('ings, GET',request.GET)
+    # print('ings, POST',request.POST)
     recipe_id = request.GET.get('recipe_id', '')
     if recipe_id.isdigit():
         recipe = get_object_or_404(
@@ -322,8 +340,8 @@ def recipe_ings(request):
     )
     if request.POST and form.is_valid():
         form.save()
-        print('save, GET',request.GET)
-        print('save, POST',request.POST)
+        # print('save, GET',request.GET)
+        # print('save, POST',request.POST)
         url = reverse('recipes:recipe_ings')
         return redirect_with_params(
             request,
@@ -333,8 +351,8 @@ def recipe_ings(request):
         )
 
     context.update({'form': form})
-    print('edit, GET',request.GET)
-    print('edit, POST',request.POST)
+    # print('edit, GET',request.GET)
+    # print('edit, POST',request.POST)
     return render(request, 'IngredientsList.html', context)
 
 
