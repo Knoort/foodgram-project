@@ -9,7 +9,7 @@ djangorestframework==3.12.4
 lazy-object-proxy==1.6.0
 mccabe==0.6.1
 wheel                   # added
-Pillow==8.1.0
+Pillow==9.3.0
 python-slugify==4.0.1
 pytz==2020.5
 PyYAML==5.4.1
